@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>青春修炼手册 · Karaoke Practice</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b3a8c">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Youth Karaoke">
+<style>
+  :root{
+    --bg:#eef3fc; --paper:#ffffff; --ink:#1f2733; --ink-soft:#6b7690;
+    --navy:#1b3a8c; --navy-soft:#e1e9fb; --navy-dark:#122a68;
+    --gold:#c9962c; --gold-soft:#f6e9c8;
+    --maroon:#8a1f2f; --maroon-soft:#f4dde0;
+    --sung:#1b3a8c; --future:#c7cedd; --current-bg:#f6e9c8;
+    --neon-green:#39ff9e;
+    --line:#dde5f5; --danger:#c0392b;
+    --radius:16px; --shadow:0 3px 12px rgba(27,58,140,.12);
+    --stage-scale:1;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    padding-bottom:170px; -webkit-tap-highlight-color:transparent;
+    min-height:100vh;
+  }
+  svg.icon{width:1em; height:1em; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:-0.15em;}
+
+  header{
+    padding:16px 16px 14px; text-align:center; position:relative;
+    background:linear-gradient(150deg,var(--navy),var(--navy-dark));
+    position:sticky; top:0; z-index:5; box-shadow:0 2px 10px rgba(18,42,104,.25);
+  }
+  header.collapsed .headtext{display:none;}
+  .hide-header-btn{
+    border:1.5px solid rgba(255,255,255,.35); background:rgba(255,255,255,.12); color:#fff; font-weight:700; font-size:12px;
+    border-radius:16px; padding:5px 12px; cursor:pointer; margin-bottom:8px;
+  }
+  header h1{font-size:23px; margin:10px 0 2px; color:#fff; font-weight:800; line-height:1.3;}
+  header h1.title-ruby rt{ font-size:0.36em; font-weight:600; color:rgba(255,255,255,.75); padding-bottom:0.3em; letter-spacing:0; }
+  header .sub{font-size:13px; color:rgba(255,255,255,.8);}
+  header .sub.en{color:var(--gold); font-style:italic; margin-top:1px;}
+  .star-badge{
+    position:absolute; top:14px; right:14px; background:var(--gold-soft); color:#8a6412;
+    border-radius:20px; padding:5px 11px; font-size:13px; font-weight:800; box-shadow:var(--shadow);
+    display:inline-flex; align-items:center; gap:4px;
+  }
+  .star-badge.pop{ animation:charPop .35s ease; }
+
+  main{max-width:640px; margin:0 auto; padding:12px 12px 24px;}
+  .card{background:var(--paper); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; margin-bottom:14px; border:1px solid var(--line);}
+  .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .row.between{justify-content:space-between;}
+  h2.section-title{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin:0 0 10px; font-weight:800;}
+
+  button{ font-family:inherit; transition:transform .08s ease; }
+  button:active{ transform:scale(.94); }
+
+  .segmented{display:flex; background:var(--navy-soft); border-radius:12px; padding:3px; gap:2px;}
+  .segmented button{
+    flex:1; border:none; background:transparent; padding:10px 6px; border-radius:9px;
+    font-size:13px; font-weight:700; color:var(--navy); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;
+  }
+  .segmented button.active{background:var(--navy); color:#fff;}
+
+  .btnrow{display:flex; background:var(--navy-soft); border-radius:12px; padding:3px; gap:2px;}
+  .btnrow button{ flex:1; border:none; background:transparent; padding:9px 4px; border-radius:9px; font-size:13px; font-weight:800; color:var(--navy); cursor:pointer; }
+  .btnrow button.active{ background:var(--navy); color:#fff; }
+
+  .pill-toggle{border:1.5px solid var(--line); background:#fff; border-radius:20px; padding:8px 14px;
+    font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer; display:inline-flex; align-items:center; gap:5px;}
+  .pill-toggle.active{border-color:var(--navy); background:var(--navy-soft); color:var(--navy);}
+
+  .sizebtnrow{display:flex; gap:6px; align-items:center;}
+  .sizebtnrow button{ width:38px; height:34px; border-radius:9px; border:1.5px solid var(--line); background:#fff; color:var(--navy); font-weight:800; cursor:pointer;}
+  .sizebtnrow button:active{ background:var(--navy-soft); }
+
+  .textlink-row{ display:flex; justify-content:center; gap:18px; margin-top:12px; padding-top:10px; border-top:1px dashed var(--line); }
+  .textlink{ border:none; background:transparent; color:var(--ink-soft); font-size:12.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0; }
+  .textlink:hover{ color:var(--navy); }
+  .back-link{ border:none; background:transparent; color:var(--navy); font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0; margin-bottom:10px; }
+
+  .chips{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; -webkit-overflow-scrolling:touch;}
+  .chip{flex:0 0 auto; border:1.5px solid var(--line); background:#fff; border-radius:14px; padding:6px 11px;
+    font-size:12px; color:var(--ink-soft); white-space:nowrap; cursor:pointer;}
+  .chip.active{border-color:var(--navy); background:var(--navy); color:#fff;}
+
+  /* ---------- ruby (pinyin-above-character) ---------- */
+  ruby{ ruby-position:over; margin:0 1px; }
+  rt{ font-size:0.42em; font-weight:600; text-align:center; padding-bottom:0.35em; }
+  .quiz-blank{
+    display:inline-block; width:0.95em; height:0.95em; border:2px dashed #9aa3b5; border-radius:5px;
+    background:rgba(154,163,181,.14); opacity:.8; vertical-align:-0.12em;
+  }
+  .plain-py{ letter-spacing:.06em; }
+
+  /* ---------- lyrics panel ---------- */
+  .panel-wrap{position:relative;}
+  .lyrics-panel{
+    max-height:46vh; overflow-y:auto; border:1px solid var(--line); border-radius:14px; padding:6px 4px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .sec-label{ font-size:12px; font-weight:800; letter-spacing:.06em; color:var(--gold); text-transform:uppercase; padding:8px 10px 2px; }
+  .sec-line{ text-align:center; padding:10px 6px; border-radius:12px; margin:2px 4px; }
+  .sec-line.now{ background:var(--current-bg); padding:16px 6px; }
+  .sec-line .hz{ font-size:calc(19px * var(--stage-scale)); font-weight:700; color:var(--future); line-height:1.9; }
+  .sec-line.past .hz{ color:var(--sung); opacity:.85; }
+  .sec-line.now .hz{ font-size:calc(27px * var(--stage-scale)); }
+  .sec-line .en{ font-size:calc(11.5px * var(--stage-scale)); color:var(--ink-soft); font-style:italic; margin-top:4px; }
+  .sec-line.now .en{ font-size:calc(13px * var(--stage-scale)); }
+
+  /* two-layer karaoke fill (robust, no background-clip) */
+  .fillwrap{ position:relative; display:inline-block; max-width:100%; }
+  .fillwrap .fb{ color:var(--future); white-space:nowrap; }
+  .fillwrap .ft{ position:absolute; left:0; top:0; width:0%; overflow:hidden; white-space:nowrap; color:var(--sung); }
+
+  .jump-btn{
+    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+    background:var(--navy); color:#fff; border:none; border-radius:20px; padding:8px 16px;
+    font-size:12px; font-weight:700; box-shadow:var(--shadow); display:none; align-items:center; gap:6px; cursor:pointer;
+  }
+  .jump-btn.show{ display:inline-flex; }
+
+  .lyric-stage-line{text-align:center; padding:20px 8px 8px; min-height:100px;}
+  .lyric-stage-line .hz{font-size:calc(30px * var(--stage-scale)); line-height:1.9; font-weight:700;}
+  .lyric-stage-line .en{font-size:calc(13px * var(--stage-scale)); color:var(--ink-soft); font-style:italic; margin-top:6px;}
+
+  /* ---------- full song list ---------- */
+  .lyric-list{max-height:230px; overflow-y:auto; border:1px solid var(--line); border-radius:12px; padding:6px;}
+  .lline{display:flex; align-items:center; gap:8px; padding:9px 8px; border-radius:9px; cursor:pointer;}
+  .lline.current-line{background:var(--current-bg);}
+  .lline .idx{font-size:10px; color:var(--ink-soft); width:20px; flex:0 0 auto;}
+  .lline .txt{flex:1;}
+  .lline .txt .hz2{font-size:15px; line-height:1.8; color:var(--navy); font-weight:700;}
+  .loopbtn{
+    flex:0 0 auto; border:none; background:transparent; font-size:17px; color:var(--future); cursor:pointer;
+    border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+    transition:color .2s, background .2s, filter .2s, transform .2s;
+  }
+  .loopbtn.on{
+    color:var(--neon-green); background:rgba(57,255,158,.16);
+    filter:drop-shadow(0 0 5px rgba(57,255,158,.85));
+    animation:loopPulse .35s ease;
+  }
+  @keyframes loopPulse{ 0%{transform:scale(1);} 55%{transform:scale(1.3);} 100%{transform:scale(1);} }
+
+  .settings-row{display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line);}
+  .settings-row:last-child{border-bottom:none;}
+  .settings-row label{font-size:14px;}
+  .muted-label{ color:var(--ink-soft); font-weight:400; }
+  .settings-row.quiz-row-centered{ justify-content:center; }
+  .quiz-check-label{ display:flex; align-items:center; gap:10px; cursor:pointer; font-size:15px; font-weight:600; color:var(--navy); }
+  .nice-checkbox{
+    appearance:none; -webkit-appearance:none; width:22px; height:22px; border-radius:7px;
+    border:2px solid var(--line); background:#fff; cursor:pointer; position:relative; flex:0 0 auto;
+    margin:0; transition:background .15s, border-color .15s, transform .15s, filter .15s;
+  }
+  .nice-checkbox:checked{
+    background:rgba(57,255,158,.18); border-color:var(--neon-green); transform:scale(1.08);
+    filter:drop-shadow(0 0 5px rgba(57,255,158,.85));
+    animation:loopPulse .35s ease;
+  }
+  .nice-checkbox:checked::after{
+    content:''; position:absolute; left:6px; top:2px; width:6px; height:11px;
+    border:solid var(--neon-green); border-width:0 2.5px 2.5px 0; transform:rotate(45deg);
+  }
+
+  /* ---------- persistent bottom bar: one solid white surface, seek row (Practice only) + nav row, no seam ---------- */
+  .bottom-bar{
+    position:fixed; left:0; right:0; bottom:0; background:#fff; z-index:9;
+    box-shadow:0 -2px 8px rgba(27,58,140,.10);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .mini-player{
+    padding:8px 14px 4px; display:flex; justify-content:center;
+  }
+  .mini-player.hide{ display:none; }
+  .mini-seek{width:88%; max-width:380px; display:flex; flex-direction:column; gap:2px;}
+  input[type=range]{width:100%; accent-color:var(--navy);}
+  .times{display:flex; justify-content:space-between; font-size:10px; color:var(--ink-soft);}
+
+  /* ---------- bottom nav: Practice / (logo or Play) / Record, one row ---------- */
+  .tabbar{
+    display:flex; align-items:center; justify-content:center; gap:26px;
+    padding:6px 4px 6px; max-width:640px; margin:0 auto;
+  }
+  .tabbar button[data-screen]{
+    background:none; border:none; padding:6px 10px; font-size:11px; color:var(--ink-soft);
+    display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;
+  }
+  .tabbar button[data-screen] .ic{
+    font-size:19px; width:38px; height:30px; display:flex; align-items:center; justify-content:center;
+    border-radius:14px; transition:background .15s;
+  }
+  .tabbar button[data-screen].active{color:var(--navy); font-weight:700;}
+  .tabbar button[data-screen].active .ic{ background:var(--navy-soft); }
+  /* center slot: swaps between the static Xavier logo (non-practice screens) and the Play button (Practice screen) */
+  .nav-center{ display:flex; align-items:center; justify-content:center; width:46px; height:46px; flex:0 0 auto; }
+  .nav-center img{ width:38px; height:38px; border-radius:50%; }
+  .nav-center button.play{
+    display:none; width:46px; height:46px; border-radius:50%; border:none; background:var(--navy); color:#fff;
+    font-size:18px; cursor:pointer; align-items:center; justify-content:center; box-shadow:var(--shadow);
+  }
+  .nav-center.show-play img{ display:none; }
+  .nav-center.show-play button.play{ display:flex; }
+
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .tap-zone{
+    width:100%; padding:34px 0; border-radius:18px; border:none; background:var(--navy); color:#fff;
+    font-size:22px; font-weight:800; letter-spacing:.05em; cursor:pointer; box-shadow:var(--shadow);
+  }
+  .tap-zone:active{transform:scale(.98);}
+  .next-line-preview{text-align:center; padding:14px; background:var(--navy-soft); border-radius:12px; margin:12px 0;}
+  .next-line-preview .lbl{font-size:11px; color:var(--ink-soft); text-transform:uppercase;}
+  .next-line-preview .hz{font-size:24px; font-weight:700; margin-top:4px; color:var(--navy);}
+  .progress-dots{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0;}
+  .progress-dots span{
+    width:20px; height:20px; border-radius:8px; background:#eef2f7; border:2px solid #cbd6e8;
+    position:relative; display:inline-flex; align-items:center; justify-content:center;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+  }
+  .progress-dots span.done{
+    background:rgba(57,255,158,.20); border-color:var(--neon-green);
+    box-shadow:0 0 0 3px rgba(57,255,158,.16), 0 0 10px rgba(57,255,158,.75), inset 0 1px 0 rgba(255,255,255,.95);
+  }
+  .progress-dots span.done::after{
+    content:'✓'; color:#2ecf7c; font-size:13px; font-weight:900; line-height:1;
+    text-shadow:0 0 8px rgba(57,255,158,.55);
+  }
+
+  textarea{width:100%; min-height:90px; font-family:monospace; font-size:11px; border:1px solid var(--line); border-radius:10px; padding:8px;}
+  .btn{border:none; background:var(--navy); color:#fff; border-radius:10px; padding:10px 14px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+  .btn.secondary{background:var(--gold-soft); color:#8a6412;}
+  .btn.ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--line);}
+  .btn.record{background:var(--maroon);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  .note{font-size:12px; color:var(--ink-soft); line-height:1.5;}
+  audio.hidden-audio{display:none;}
+  .rec-dot{width:10px; height:10px; border-radius:50%; background:var(--maroon); display:inline-block; margin-right:6px;}
+  .flash{position:fixed; top:14px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff;
+    padding:8px 16px; border-radius:20px; font-size:13px; z-index:50; opacity:0; transition:opacity .25s; pointer-events:none;}
+  .flash.show{opacity:.94;}
+
+  @keyframes charPop{ 0%{transform:scale(1);} 40%{transform:scale(1.4);} 100%{transform:scale(1);} }
+  @keyframes floatStar{ 0%{ transform:translate(-50%,0) scale(.6); opacity:1; } 100%{ transform:translate(-50%,-38px) scale(1.2); opacity:0; } }
+  .float-star{ position:absolute; font-size:16px; pointer-events:none; animation:floatStar .7s ease-out forwards; z-index:6; color:var(--gold); }
+  @keyframes confettiFall{ 0%{ transform:translateY(-10vh) rotate(0deg); opacity:1; } 100%{ transform:translateY(110vh) rotate(360deg); opacity:.9; } }
+  .confetti-piece{ position:fixed; top:0; font-size:22px; z-index:60; pointer-events:none; animation:confettiFall linear forwards; }
+
+  /* Compact calibration line selector: always show the number */
+  .cal-line-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px;margin:12px 0;}
+  .cal-line-grid button{position:relative;min-width:0;width:100%;height:40px;padding:1px;border:1.5px solid #d5dce9;border-radius:10px;background:#edf1f7;color:#6b7690;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column;line-height:1.05;}
+  .cal-line-grid button.timed{background:#e1e9fb;color:#1b3a8c;border-color:#a7bee8;}
+  .cal-line-grid button.fine-timed{background:#d9ffe9;color:#096d48;border-color:#39ff9e;box-shadow:0 0 7px #39ff9e,0 0 13px rgba(57,255,158,.5);}
+  .cal-line-grid button.selected{outline:3px solid #1b3a8c;outline-offset:1px;}
+  .cal-line-grid .cal-number{font-size:13px;}
+  .cal-line-grid .cal-check{font-size:10px;line-height:1;color:inherit;}
+  .cal-legend{display:flex;gap:10px;flex-wrap:wrap;color:#6b7690;font-size:11px;justify-content:center;}
+  .cal-seek-row{display:flex;gap:8px;align-items:center;}
+  .cal-seek-row input[type=range]{min-width:0;flex:1;}
+  .cal-seek-row .note{white-space:nowrap;}
+  @media(min-width:500px){.cal-line-grid{grid-template-columns:repeat(10,minmax(0,1fr));}}
+.cal-line-grid button.needs-review{border-color:#cc932d!important;box-shadow:0 0 0 2px rgba(204,147,45,.3);}
+</style>
+</head>
+<body>
+
+<header id="mainHeader">
+  <button class="hide-header-btn" id="hideHeaderBtn">
+    <svg class="icon" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    Hide header
+  </button>
+  <div class="headtext">
+    <h1 class="title-ruby"><ruby>青<rt>qīng</rt></ruby><ruby>春<rt>chūn</rt></ruby><ruby>修<rt>xiū</rt></ruby><ruby>炼<rt>liàn</rt></ruby><ruby>手<rt>shǒu</rt></ruby><ruby>册<rt>cè</rt></ruby></h1>
+    <div class="sub en">Manual of Youth · TFBOYS</div>
+  </div>
+  <div class="star-badge" id="starBadge">
+    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"></polygon></svg>
+    <span id="starCountText">0</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== PRACTICE SCREEN ===================== -->
+  <section id="screen-practice" class="screen active">
+
+    <div class="card">
+      <div class="row between" style="margin-bottom:10px;">
+        <div class="segmented" id="modeSeg" style="flex:1;">
+          <button data-mode="sung" class="active">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
+            Sung
+          </button>
+          <button data-mode="bgm">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            BGM only
+          </button>
+          <button data-mode="silent">
+            <svg class="icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+            Silent
+          </button>
+        </div>
+      </div>
+      <div class="row between">
+        <div class="btnrow" id="speedSeg" style="flex:1;">
+          <button data-speed="0.5">50%</button>
+          <button data-speed="0.75">75%</button>
+          <button data-speed="1" class="active">100%</button>
+        </div>
+      </div>
+      <div class="note" style="margin-top:8px;">Speed slows the song down for practice (pitch stays the same). Highlighting always stays in sync with it automatically.</div>
+      <div class="textlink-row">
+        <button class="textlink" data-goto="calibrate">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l3 2"></path><path d="M9 2h6"></path></svg>
+          Calibrate timing
+        </button>
+        <button class="textlink" data-goto="about">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          About
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row between">
+        <div class="row" style="gap:6px;">
+          <button class="pill-toggle active" id="toggleHanzi">汉字</button>
+          <button class="pill-toggle active" id="togglePinyin">Pinyin</button>
+          <button class="pill-toggle" id="toggleEnglish">English</button>
+        </div>
+      </div>
+      <div class="row between" style="margin-top:10px;">
+        <div class="segmented" id="viewSeg" style="max-width:210px;">
+          <button data-view="section" class="active">Section</button>
+          <button data-view="line">Line</button>
+        </div>
+        <div class="sizebtnrow" id="sizeBtns">
+          <button data-size="0.85">A-</button>
+          <button data-size="1.2">A+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Jump to section</h2>
+      <div class="chips" id="sectionChips"></div>
+    </div>
+
+    <div class="card">
+      <div class="panel-wrap">
+        <div class="lyrics-panel" id="lyricsPanel"></div>
+        <button class="jump-btn" id="jumpBtn">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="19 12 12 19 5 12"></polyline><line x1="12" y1="5" x2="12" y2="19"></line></svg>
+          Jump to current line
+        </button>
+      </div>
+      <div class="lyric-stage-line" id="lineStage" style="display:none;">
+        <div class="hz" id="lsHz">—</div>
+        <div class="en" id="lsEn"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row between">
+        <h2 class="section-title" style="margin:0;">Full song (tap to jump · loop icon to repeat a line)</h2>
+      </div>
+      <div class="lyric-list" id="lyricList"></div>
+    </div>
+
+    <div class="card">
+      <div class="settings-row quiz-row-centered">
+        <label class="quiz-check-label" for="quizToggle">
+          <input type="checkbox" id="quizToggle" class="nice-checkbox">
+          <span>Quiz mode (hide some words)</span>
+        </label>
+      </div>
+      <div id="quizControls" style="display:none; margin-top:8px;">
+        <div class="settings-row">
+          <label class="muted-label">Hide about <b id="quizPctVal">25%</b> of characters</label>
+        </div>
+        <input type="range" id="quizPct" min="10" max="70" step="5" value="25">
+        <div style="text-align:center;">
+          <button class="btn secondary" id="quizReroll" style="margin-top:8px;">Pick different words to hide</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===================== CALIBRATE SCREEN ===================== -->
+  <section id="screen-calibrate" class="screen">
+    <button class="back-link" data-goto="practice">
+      <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      Back to Practice
+    </button>
+
+    <div class="card">
+      <h2 class="section-title">Line calibration · Sung (53 lines)</h2>
+      <p class="note">Select any numbered line, play or seek to its place in the song, then tap when that line starts. The first 32 lines also time BGM Only.</p>
+      <div class="row between" style="margin:12px 0 8px;">
+        <span class="note" id="calProgress">0 / 53 lines captured</span>
+        <button class="btn ghost" id="calUndo">Undo last tap</button>
+      </div>
+      <div class="next-line-preview" style="margin:8px 0 10px;">
+        <div class="lbl" id="calLineLabel">SELECTED LINE 1 / 53</div>
+        <div class="hz" id="calNextHz">—</div>
+        <div class="note" id="calSavedLabel">Not yet calibrated</div>
+      </div>
+      <div class="cal-seek-row">
+        <button class="btn ghost" id="calPlayPause" aria-label="Play or pause audio">▶ Play</button>
+        <input type="range" id="calSeek" min="0" max="292.99" step="0.05" value="0" aria-label="Calibration audio position">
+        <span id="calClock" class="note">0:00</span>
+        <span id="calDuration" class="note">/ 4:53</span>
+      </div>
+      <button class="tap-zone" id="calTapBtn" style="margin-top:10px;">TAP HERE · SAVE SELECTED LINE</button>
+      <p class="note" style="text-align:center;margin:8px 0 12px;">After a tap, the next line is selected automatically. The song keeps playing.</p>
+      <div class="progress-dots cal-line-grid" id="calDots"></div>
+      <div class="cal-legend"><span>Gray · untimed</span><span>Blue · line saved</span><span>Green glow · characters saved</span></div>
+      <div class="row between" style="margin-top:12px;">
+        <button class="btn secondary" id="calApply" disabled>Apply all 53 lines</button>
+        <button class="btn ghost" id="calReset">Clear draft</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Fine-tune one line, word by word</h2>
+      <p class="note" id="fineLockMessage">Complete and apply all 53 line timestamps first. Then choose a line to loop and fine-tune its characters.</p>
+      <select id="fineLineSelect" style="width:100%; padding:9px; border-radius:10px; border:1.5px solid var(--line); font-size:14px; margin-top:8px;"></select>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn secondary" id="fineLoopBtn">Loop this line</button>
+        <button class="btn ghost" id="fineStopBtn">Stop</button>
+      </div>
+      <p class="note" id="fineLoopBounds" style="margin-top:8px; font-weight:700;">Select a line to see its applied loop boundaries.</p>
+      <div class="next-line-preview" style="margin-top:10px;">
+        <div class="lbl">Tap when this character is sung</div>
+        <div class="hz" id="fineNextChar">—</div>
+      </div>
+      <button class="tap-zone" id="fineTapBtn" disabled>TAP HERE</button>
+      <div class="row between" style="margin-top:10px;">
+        <span class="note" id="fineProgress">Pick a line to begin</span>
+        <span class="note" id="fineSavedStatus"></span>
+      </div>
+      <div class="progress-dots" id="fineDots"></div>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn secondary" id="fineApply" disabled>Apply to this line</button>
+        <button class="btn ghost" id="fineClear">Clear override</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Export / import timing</h2>
+      <p class="note">This captures <b>both</b> the line timing and any word-by-word fine-tuning together, in one piece. Timing is also saved on this device automatically. To make it permanent for everyone, copy the JSON and send it back so it can be baked into the app.</p>
+      <textarea id="calJson" readonly></textarea>
+      <div class="row" style="margin-top:8px;">
+        <button class="btn secondary" id="calCopy">Copy JSON</button>
+        <button class="btn ghost" id="calDownload">Download JSON</button>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <textarea id="calImportBox" placeholder="Paste previously-exported timing JSON here..."></textarea>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <button class="btn ghost" id="calCheck">1. Check JSON</button>
+        <button class="btn secondary" id="calImport" disabled>2. Apply Calibration</button>
+      </div>
+      <p class="note" id="calImportStatus" role="status">Paste your timing JSON, then click Check JSON. Nothing is imported until you click Apply Calibration.</p>
+    </div>
+  </section>
+
+  <!-- ===================== RECORD SCREEN ===================== -->
+  <section id="screen-record" class="screen">
+    <div class="card">
+      <h2 class="section-title">Record & playback</h2>
+      <p class="note">Records from the microphone while the current Practice mode plays, so he can hear himself back against the music. Nothing is uploaded anywhere — it stays on this device until you download it.</p>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn record" id="recBtn">Record</button>
+        <button class="btn ghost" id="recStopBtn" disabled>Stop</button>
+      </div>
+      <div class="note" id="recStatus" style="margin-top:8px;">Not recording.</div>
+    </div>
+    <div class="card" id="recPlaybackCard" style="display:none;">
+      <h2 class="section-title">Your take</h2>
+      <audio id="recPlayback" controls style="width:100%;"></audio>
+      <div class="row" style="margin-top:8px;">
+        <a class="btn secondary" id="recDownload" download="my-singing.webm">Download recording</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT SCREEN ===================== -->
+  <section id="screen-about" class="screen">
+    <button class="back-link" data-goto="practice">
+      <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      Back to Practice
+    </button>
+    <div class="card">
+      <h2 class="section-title">About this build</h2>
+      <p class="note">Settings, quiz words, and calibrated timing are saved on this device (this browser) automatically, so they'll still be here next time you open the file — until you clear browser data.</p>
+      <p class="note">Once this is hosted (e.g. on GitHub Pages) it can be installed to the home screen with a proper icon and offline support.</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="bottom-bar">
+  <div class="mini-player" id="miniPlayer">
+    <div class="mini-seek">
+      <input type="range" id="seekBar" min="0" max="292.99" step="0.05" value="0">
+      <div class="times"><span id="tCur">0:00</span><span id="tDur">4:53</span></div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <button data-screen="practice" class="active">
+      <span class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
+      Practice
+    </button>
+    <div class="nav-center show-play" id="navCenter">
+      <img src="assets/andy-logo.png" alt="Andy">
+      <button class="play" id="playBtn">
+        <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" id="playIcon"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+      </button>
+    </div>
+    <button data-screen="record">
+      <span class="ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></span>
+      Record
+    </button>
+  </div>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<audio id="vocalsEl" class="hidden-audio" src="audio/vocals.mp3" preload="auto"></audio>
+<audio id="bgmEl" class="hidden-audio" src="audio/bgm.mp3" preload="auto"></audio>
+
+<script>
+/* ================= LYRICS DATA: School-supplied text, pinyin, translation ================= */
+const SECTION_1 = [
+  {"hanzi": "跟着我左手右手一个慢动作", "pinyin": ["gēn", "zhe", "wǒ", "zuǒ", "shǒu", "yòu", "shǒu", "yī", "gè", "màn", "dòng", "zuò"], "punct": "", "en": "Follow my left hand and the right in slow motion"},
+  {"hanzi": "右手左手慢动作重播", "pinyin": ["yòu", "shǒu", "zuǒ", "shǒu", "màn", "dòng", "zuò", "chóng", "bō"], "punct": "", "en": "Right hand, left hand, slow motion reply"},
+  {"hanzi": "这首歌给你快乐", "pinyin": ["zhè", "shǒu", "gē", "gěi", "nǐ", "kuài", "lè"], "punct": "", "en": "The song makes you happy"},
+  {"hanzi": "你有没有爱上我", "pinyin": ["nǐ", "yǒu", "méi", "yǒu", "ài", "shàng", "wǒ"], "punct": "", "en": "Have you fallen in love with me?"},
+  {"hanzi": "跟着我鼻子眼睛动一动耳朵", "pinyin": ["gēn", "zhe", "wǒ", "bí", "zi", "yǎn", "jīng", "dòng", "yí", "dòng", "ěr", "duo"], "punct": "", "en": "Follow my nose and my eyes and move your ears"},
+  {"hanzi": "装乖耍帅换不停风格", "pinyin": ["zhuāng", "guāi", "shuǎ", "shuài", "huàn", "bù", "tíng", "fēng", "gé"], "punct": "", "en": "Be cute or stay cool, change different styles"},
+  {"hanzi": "青春有太多未知的猜测", "pinyin": ["qīng", "chūn", "yǒu", "tài", "duō", "wèi", "zhī", "de", "cāi", "cè"], "punct": "", "en": "Youth is full of uncertainties"},
+  {"hanzi": "成长的烦恼算什么", "pinyin": ["chéng", "zhǎng", "de", "fán", "nǎo", "suàn", "shén", "me"], "punct": "", "en": "Take it easy with the growing pains 1,2,3 Go"},
+];
+
+const SECTION_2 = [
+  {"hanzi": "皮鞋擦亮换上西装", "pinyin": ["pí", "xié", "cā", "liàng", "huàn", "shàng", "xī", "zhuāng"], "punct": "", "en": "Polish your shoes, wear a suit"},
+  {"hanzi": "佩戴上一克拉的梦想", "pinyin": ["pèi", "dài", "shàng", "yī", "kè", "lā", "de", "mèng", "xiǎng"], "punct": "", "en": "Carry one-carat dream"},
+  {"hanzi": "我的勇敢充满电量", "pinyin": ["wǒ", "de", "yǒng", "gǎn", "chōng", "mǎn", "diàn", "liàng"], "punct": "", "en": "I’m fully charged with courage"},
+  {"hanzi": "昂首到达每一个地方", "pinyin": ["áng", "shǒu", "dào", "dá", "měi", "yí", "gè", "dì", "fāng"], "punct": "", "en": "It takes me anywhere I want"},
+];
+
+const SECTION_3 = [
+  {"hanzi": "这世界的太阳", "pinyin": ["zhè", "shì", "jiè", "de", "tài", "yáng"], "punct": "", "en": "The sun of the world"},
+  {"hanzi": "因为自信才能把我照亮", "pinyin": ["yīn", "wèi", "zì", "xìn", "cái", "néng", "bǎ", "wǒ", "zhào", "liàng"], "punct": "", "en": "Shines on my confidence"},
+  {"hanzi": "这舞台的中央", "pinyin": ["zhè", "wǔ", "tái", "de", "zhōng", "yāng"], "punct": "", "en": "The centre of the stage"},
+  {"hanzi": "有我才闪亮有我才能发着光", "pinyin": ["yǒu", "wǒ", "cái", "shǎn", "liàng", "yǒu", "wǒ", "cái", "néng", "fā", "zhe", "guāng"], "punct": "", "en": "I’m the reason for the spotlight"},
+];
+
+const SECTION_4 = [
+  {"hanzi": "跟着我左手右手一个慢动作", "pinyin": ["gēn", "zhe", "wǒ", "zuǒ", "shǒu", "yòu", "shǒu", "yī", "gè", "màn", "dòng", "zuò"], "punct": "", "en": "Follow my left hand and the right in slow motion"},
+  {"hanzi": "右手左手慢动作重播", "pinyin": ["yòu", "shǒu", "zuǒ", "shǒu", "màn", "dòng", "zuò", "chóng", "bō"], "punct": "", "en": "Right hand, left hand, slow motion reply"},
+  {"hanzi": "这首歌给你快乐", "pinyin": ["zhè", "shǒu", "gē", "gěi", "nǐ", "kuài", "lè"], "punct": "", "en": "The song makes you happy"},
+  {"hanzi": "你有没有爱上我", "pinyin": ["nǐ", "yǒu", "méi", "yǒu", "ài", "shàng", "wǒ"], "punct": "", "en": "Have you fallen in love with me?"},
+  {"hanzi": "跟着我鼻子眼睛动一动耳朵", "pinyin": ["gēn", "zhe", "wǒ", "bí", "zi", "yǎn", "jīng", "dòng", "yí", "dòng", "ěr", "duo"], "punct": "", "en": "Follow my nose and my eyes and move your ears"},
+  {"hanzi": "装乖耍帅换不停风格", "pinyin": ["zhuāng", "guāi", "shuǎ", "shuài", "huàn", "bù", "tíng", "fēng", "gé"], "punct": "", "en": "Be cute or stay cool, change different styles"},
+  {"hanzi": "青春有太多未知的猜测", "pinyin": ["qīng", "chūn", "yǒu", "tài", "duō", "wèi", "zhī", "de", "cāi", "cè"], "punct": "", "en": "Youth is full of uncertainties"},
+  {"hanzi": "成长的烦恼算什么", "pinyin": ["chéng", "zhǎng", "de", "fán", "nǎo", "suàn", "shén", "me"], "punct": "", "en": "Take it easy with the growing pains"},
+];
+
+const SECTION_5 = [
+  {"hanzi": "经常会想长大多好", "pinyin": ["jīng", "cháng", "huì", "xiǎng", "zhǎng", "dà", "duō", "hǎo"], "punct": "", "en": "Always think it’s so good to grow up"},
+  {"hanzi": "有些事情却只能想象", "pinyin": ["yǒu", "xiē", "shì", "qíng", "què", "zhǐ", "néng", "xiǎng", "xiàng"], "punct": "", "en": "But something we can only imagine"},
+  {"hanzi": "想说就说想做就做", "pinyin": ["xiǎng", "shuō", "jiù", "shuō", "xiǎng", "zuò", "jiù", "zuò"], "punct": "", "en": "Say what you want to say, do what you want to do"},
+  {"hanzi": "为了明天的自己鼓掌", "pinyin": ["wèi", "le", "míng", "tiān", "de", "zì", "jǐ", "gǔ", "zhǎng"], "punct": "", "en": "Applaud for my own in the future"},
+];
+
+const SECTION_6 = [
+  {"hanzi": "这世界的太阳", "pinyin": ["zhè", "shì", "jiè", "de", "tài", "yáng"], "punct": "", "en": "The sun of the world"},
+  {"hanzi": "因为自信才能把我照亮", "pinyin": ["yīn", "wèi", "zì", "xìn", "cái", "néng", "bǎ", "wǒ", "zhào", "liàng"], "punct": "", "en": "Shines on my confidence"},
+  {"hanzi": "这舞台的中央", "pinyin": ["zhè", "wǔ", "tái", "de", "zhōng", "yāng"], "punct": "", "en": "The centre of the stage"},
+  {"hanzi": "有我才闪亮有我才能发着光", "pinyin": ["yǒu", "wǒ", "cái", "shǎn", "liàng", "yǒu", "wǒ", "cái", "néng", "fā", "zhe", "guāng"], "punct": "", "en": "I’m the reason for the spotlight"},
+];
+
+const SECTION_7 = [
+  {"hanzi": "向明天对不起", "pinyin": ["xiàng", "míng", "tiān", "duì", "bù", "qǐ"], "punct": "", "en": "Face tomorrow [I’m Sorry]"},
+  {"hanzi": "向前冲不客气", "pinyin": ["xiàng", "qián", "chōng", "bù", "kè", "qi"], "punct": "", "en": "Run ahead [You’re welcome]"},
+  {"hanzi": "一路有你充满斗志无限动力", "pinyin": ["yí", "lù", "yǒu", "nǐ", "chōng", "mǎn", "dòu", "zhì", "wú", "xiàn", "dòng", "lì"], "punct": "", "en": "All the journey together with you, I’m full of energy"},
+  {"hanzi": "男子汉没有什么输不起", "pinyin": ["nán", "zǐ", "hàn", "méi", "yǒu", "shén", "me", "shū", "bù", "qǐ"], "punct": "", "en": "Boys don’t fear any failures"},
+  {"hanzi": "正太修炼成功的秘籍", "pinyin": ["zhèng", "tài", "xiū", "liàn", "chéng", "gōng", "de", "mì", "jí"], "punct": "", "en": "This is the secret manual to success"},
+];
+
+const SECTION_8 = [
+  {"hanzi": "跟着我左手右手一个慢动作", "pinyin": ["gēn", "zhe", "wǒ", "zuǒ", "shǒu", "yòu", "shǒu", "yī", "gè", "màn", "dòng", "zuò"], "punct": "", "en": "Follow my left hand and the right in slow motion"},
+  {"hanzi": "右手左手慢动作重播", "pinyin": ["yòu", "shǒu", "zuǒ", "shǒu", "màn", "dòng", "zuò", "chóng", "bō"], "punct": "", "en": "Right hand, left hand, slow motion reply"},
+  {"hanzi": "这首歌给你快乐", "pinyin": ["zhè", "shǒu", "gē", "gěi", "nǐ", "kuài", "lè"], "punct": "", "en": "The song makes you happy"},
+  {"hanzi": "你有没有爱上我", "pinyin": ["nǐ", "yǒu", "méi", "yǒu", "ài", "shàng", "wǒ"], "punct": "", "en": "Have you fallen in love with me?"},
+  {"hanzi": "跟着我鼻子眼睛动一动耳朵", "pinyin": ["gēn", "zhe", "wǒ", "bí", "zi", "yǎn", "jīng", "dòng", "yí", "dòng", "ěr", "duo"], "punct": "", "en": "Follow my nose and my eyes and move your ears"},
+  {"hanzi": "装乖耍帅换不停风格", "pinyin": ["zhuāng", "guāi", "shuǎ", "shuài", "huàn", "bù", "tíng", "fēng", "gé"], "punct": "", "en": "Be cute or stay cool, change different styles"},
+  {"hanzi": "青春有太多未知的猜测", "pinyin": ["qīng", "chūn", "yǒu", "tài", "duō", "wèi", "zhī", "de", "cāi", "cè"], "punct": "", "en": "Youth is full of uncertainties"},
+  {"hanzi": "成长的烦恼算什么", "pinyin": ["chéng", "zhǎng", "de", "fán", "nǎo", "suàn", "shén", "me"], "punct": "", "en": "Take it easy with the growing pains"},
+];
+
+const SECTION_9 = [
+  {"hanzi": "跟着我左手右手一个慢动作", "pinyin": ["gēn", "zhe", "wǒ", "zuǒ", "shǒu", "yòu", "shǒu", "yī", "gè", "màn", "dòng", "zuò"], "punct": "", "en": "Follow my left hand and the right in slow motion"},
+  {"hanzi": "右手左手慢动作重播", "pinyin": ["yòu", "shǒu", "zuǒ", "shǒu", "màn", "dòng", "zuò", "chóng", "bō"], "punct": "", "en": "Right hand, left hand, slow motion reply"},
+  {"hanzi": "这首歌给你快乐", "pinyin": ["zhè", "shǒu", "gē", "gěi", "nǐ", "kuài", "lè"], "punct": "", "en": "The song makes you happy"},
+  {"hanzi": "你有没有爱上我", "pinyin": ["nǐ", "yǒu", "méi", "yǒu", "ài", "shàng", "wǒ"], "punct": "", "en": "Have you fallen in love with me?"},
+  {"hanzi": "跟着我鼻子眼睛动一动耳朵", "pinyin": ["gēn", "zhe", "wǒ", "bí", "zi", "yǎn", "jīng", "dòng", "yí", "dòng", "ěr", "duo"], "punct": "", "en": "Follow my nose and my eyes and move your ears"},
+  {"hanzi": "装乖耍帅换不停风格", "pinyin": ["zhuāng", "guāi", "shuǎ", "shuài", "huàn", "bù", "tíng", "fēng", "gé"], "punct": "", "en": "Be cute or stay cool, change different styles"},
+  {"hanzi": "青春有太多未知的猜测", "pinyin": ["qīng", "chūn", "yǒu", "tài", "duō", "wèi", "zhī", "de", "cāi", "cè"], "punct": "", "en": "Youth is full of uncertainties"},
+  {"hanzi": "成长的烦恼算什么", "pinyin": ["chéng", "zhǎng", "de", "fán", "nǎo", "suàn", "shén", "me"], "punct": "", "en": "Take it easy with the growing pains"},
+];
+
+const FULL_SONG_SECTIONS = [
+  {name:"Chorus 1", lines:SECTION_1},
+  {name:"Verse 1", lines:SECTION_2},
+  {name:"Pre-Chorus 1", lines:SECTION_3},
+  {name:"Chorus 2", lines:SECTION_4},
+  {name:"Verse 2", lines:SECTION_5},
+  {name:"Pre-Chorus 2", lines:SECTION_6},
+  {name:"Chorus 3", lines:SECTION_8},
+  {name:"Bridge / Rap", lines:SECTION_7},
+  {name:"Chorus 4", lines:SECTION_9},
+];
+const EXAM_LINE_COUNT = 32;
+const FULL_LINE_COUNT = 53;
+const BGM_SONG_SECTIONS = FULL_SONG_SECTIONS.slice(0,6);
+let SONG_SECTIONS = FULL_SONG_SECTIONS;
+let ALL_LINES = [];
+let N_LINES = 0;
+const FULL_SONG_LINES = FULL_SONG_SECTIONS.flatMap(sec=>sec.lines);
+let SECTION_OCCURRENCES = [];
+function rebuildSongData(){
+  SONG_SECTIONS = (mode === 'bgm' || (mode === 'silent' && silentBaseMode === 'bgm')) ? BGM_SONG_SECTIONS : FULL_SONG_SECTIONS;
+  ALL_LINES = [];
+  SECTION_OCCURRENCES = [];
+  let at = 0;
+  SONG_SECTIONS.forEach((sec, sectionIdx)=>{
+    SECTION_OCCURRENCES.push({sectionIdx, name:sec.name, startIdx:at, endIdx:at+sec.lines.length-1});
+    sec.lines.forEach(line=>ALL_LINES.push({...line, sectionIdx, sectionName:sec.name}));
+    at += sec.lines.length;
+  });
+  N_LINES = ALL_LINES.length;
+}
+function occurrenceForLine(li){ return SECTION_OCCURRENCES.find(o => li >= o.startIdx && li <= o.endIdx) || SECTION_OCCURRENCES[0]; }
+
+const AUDIO_DURATION = 292.992708; // Vocals track
+const BGM_DURATION = 180.765542; // Instrumental track
+const LYRIC_END_TIME = 272; // Last sung syllable ends at 4:32; the instrumental outro continues.
+
+/* ================= TIMING (default placeholder + calibration) ================= */
+// NOTE: this key must NEVER change again between app updates — changing it
+// (as earlier versions of this file did, v1->v2->v3->v4) silently orphans
+// any calibration the user already saved in their browser. Keep it stable.
+const STORAGE_KEY = 'manual_of_youth_karaoke_final_432_v1'; // Isolated from earlier auto-restoration builds
+// Old keys used by earlier versions of this file, kept only so we can
+// automatically recover calibration data saved under them (see migrateLegacyState below).
+const LEGACY_STORAGE_KEYS = []; // New song: do not import previous song calibration
+// Baked-in calibration (line-level taps + word-level fine-tune for all 32 lines),
+// captured by hand and supplied directly. This is the permanent shipped default —
+// any fresh install with no saved localStorage calibration starts from this,
+// not an evenly-spaced guess. Re-calibrating on-device (Calibrate screen) still
+// overrides this per-browser, same as before.
+const BAKED_LINE_STARTS = [5.59,10.85,15.06,19.28,22.99,27.78,31.79,35.99,56.46,61.28,64.97,69.56,73,77.85,81.34,86.41,94.2,99.18,103.24,107.44,111.12,115.95,119.84,124.21,144.79,149.02,152.97,157.76,161.24,166.22,169.59,174.58,183.46,188.3,192.32,196.61,200.06,205.15,208.83,213.16,222.27,224.69,228.05,232.06,235.51,239.13,243.73,248.11,252.44,255.99,260.92,264.53,269.25]; // User-supplied default calibration
+const BAKED_CHAR_OVERRIDES = {"0":[5.99,6.28,6.55,6.88,7.34,7.82,8.1,8.39,8.64,8.92,9.24,9.67],"1":[11.11,11.57,11.99,12.27,12.47,12.75,13.02,13.35,13.81],"2":[15.51,15.89,16.23,17.02,17.36,17.86,18.33],"3":[19.59,19.87,20.09,20.3,20.56,20.84,21.28],"4":[23.08,23.48,23.66,23.98,24.33,24.71,24.96,25.24,25.49,25.78,26.09,26.5],"5":[28.2,28.52,28.81,29.02,29.3,29.62,29.97,30.2,30.65],"6":[32.16,32.42,32.64,32.88,33.15,33.59,33.86,34.15,34.6,35.17],"7":[36.29,36.52,36.7,36.89,37.09,37.32,37.64,38.06],"8":[56.7,56.89,57.07,57.37,58.63,58.93,59.22,59.56],"9":[61.57,61.76,61.99,62.21,62.42,62.67,62.91,63.32,63.79],"10":[65.23,65.47,65.67,65.88,67.12,67.35,67.66,67.94],"11":[69.83,70.18,70.43,70.64,70.9,71.13,71.38,71.65,72.28],"12":[73.28,73.74,74.25,75.69,76.22,76.67],"13":[78.19,78.53,78.81,79.01,79.26,79.48,79.74,79.97,80.27,80.72],"14":[81.62,81.95,82.49,84.11,84.53,84.96],"15":[86.75,87.03,87.29,87.53,87.79,88.59,89.1,89.39,89.65,89.96,90.39,90.78],"16":[94.6,94.86,95.07,95.34,95.69,96.11,96.32,96.74,96.97,97.34,97.64,98],"17":[99.49,99.82,100.23,100.7,101.02,101.25,101.51,101.81,102.24],"18":[103.58,103.96,104.54,105.36,105.7,106.21,106.67],"19":[107.74,108.12,108.37,108.65,108.93,109.2,109.67],"20":[111.51,111.74,112.06,112.45,112.92,113.14,113.39,113.6,113.83,114.08,114.39,114.86],"21":[116.32,116.7,117.1,117.34,117.67,117.92,118.2,118.57,118.97],"22":[120.15,120.47,120.91,121.21,121.5,121.94,122.24,122.57,122.97,123.46],"23":[124.52,124.7,124.93,125.19,125.39,125.65,125.96,126.45],"24":[145.7,146.01,146.26,146.58,147.78,148.05,148.31,148.66],"25":[149.38,149.65,149.86,150.1,150.32,150.55,150.77,151.06,151.52],"26":[153.46,153.77,154.06,154.39,155.58,155.9,156.17,156.48],"27":[158.05,158.68,159.05,159.22,159.49,159.88,160.13,160.48,160.9],"28":[161.9,162.28,162.77,164.25,164.64,165.1],"29":[166.67,166.97,167.34,167.56,167.79,168.01,168.25,168.51,168.8,169.25],"30":[170.15,170.57,171.05,172.64,173.04,173.45],"31":[175.18,175.57,175.85,176.11,176.38,177.11,177.62,177.91,178.19,178.49,179.05,179.36],"32":[183.76,184.02,184.25,184.62,185.05,185.28,185.54,185.78,186.04,186.31,186.62,187.01],"33":[188.62,188.98,189.43,189.68,189.96,190.21,190.49,190.67,191.33],"34":[192.75,193.05,193.45,194.28,194.63,195.08,195.5],"35":[196.84,197.18,197.38,197.62,197.88,198.16,198.57],"36":[200.37,200.67,200.9,201.4,201.84,202.09,202.34,202.61,202.84,203.1,203.4,203.92],"37":[205.52,205.88,206.26,206.53,206.79,207.05,207.22,207.6,208.03],"38":[209.18,209.46,209.81,210,210.32,210.82,211.11,211.37,211.78,212.33],"39":[213.38,213.6,213.78,213.99,214.21,214.45,214.78,215.25],"40":[222.74,223.04,223.26,223.55,223.91,224.28],"41":[224.99,225.16,225.37,225.64,225.99,226.26],"42":[228.25,228.43,228.61,228.81,229.03,229.33,229.58,229.78,229.99,230.18,230.37,230.56],"43":[232.3,232.6,232.85,233.17,233.51,233.74,234.08,234.39,234.66,235.13],"44":[235.9,236.18,236.45,236.71,236.97,237.42,237.66,237.87,238.11],"45":[240,240.33,240.53,240.84,241.22,241.66,241.91,242.19,242.42,242.75,243.06,243.42],"46":[244.02,244.48,245.03,245.33,245.6,245.88,246.17,246.51,246.92],"47":[249.02,249.47,250.14,250.86,251.19,251.69,252.08],"48":[252.71,252.99,253.23,253.45,253.66,254,254.36],"49":[256.38,256.63,256.88,257.23,257.69,257.93,258.16,258.37,258.6,258.85,259.17,259.6],"50":[261.55,262.15,262.67,262.92,263.22,263.42,263.76,264.04,264.5],"51":[264.94,265.19,265.68,265.94,266.2,266.64,266.88,267.14,267.57,268.18],"52":[270.24,270.5,270.74,270.96,271.17,271.38,271.61,272.14]}; // User-supplied character calibration, preserved exactly
+// Both tracks share their first 32 line timings. The later 21 belong to vocals only.
+// Initial timestamps are placeholders, not calibrated singing times.
+function defaultLineStarts(){
+  if(BAKED_LINE_STARTS.length === 53) return BAKED_LINE_STARTS.slice();
+  // fallback (should not normally run): evenly-spaced placeholder
+  const first = Array.from({length:32},(_,i)=> +(6 + i * (174/32)).toFixed(2));
+  const rest = Array.from({length:21},(_,i)=> +(181 + i * (108/21)).toFixed(2));
+  return first.concat(rest);
+}
+function defaultCharOverrides(){ return JSON.parse(JSON.stringify(BAKED_CHAR_OVERRIDES)); }
+function loadState(){ try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){} return {}; }
+function saveState(patch){ const cur = loadState(); const merged = {...cur, ...patch}; try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); }catch(e){} return merged; }
+function migrateLegacyState(){
+  // If this (stable) key already has calibration, nothing to do.
+  try{
+    const cur = loadState();
+    if(cur.lineStarts && cur.lineStarts.length === 53) return;
+    for(const oldKey of LEGACY_STORAGE_KEYS){
+      const raw = localStorage.getItem(oldKey);
+      if(!raw) continue;
+      const old = JSON.parse(raw);
+      if(old && old.lineStarts && old.lineStarts.length === 53){
+        saveState(old); // copy forward into the stable key; legacy key left untouched
+        return;
+      }
+    }
+  }catch(e){}
+}
+migrateLegacyState();
+
+// Bump this whenever BAKED_LINE_STARTS / BAKED_CHAR_OVERRIDES above are updated with fresh
+// calibration. On the load right after a bump, this forces the freshly-shipped calibration to
+// win over whatever this device already had saved (which could be older/partial calibration from
+// an earlier tapping session) — otherwise the "saved.lineStarts ? saved : default" check below
+// would keep silently preferring stale local data forever, and a shipped update would look like
+// it "didn't take." After that one forced load, the user's own on-device recalibration (if any)
+// is respected again as normal.
+const BAKED_CALIBRATION_VERSION = 3;
+let mode = 'sung';
+let silentBaseMode = 'sung';
+SONG_SECTIONS = FULL_SONG_SECTIONS;
+rebuildSongData();
+let saved = loadState();
+if(saved.bakedCalibrationVersion !== BAKED_CALIBRATION_VERSION){
+  saved = saveState({
+    lineStarts: defaultLineStarts(),
+    charOverrides: defaultCharOverrides(),
+    isCalibrated: true,
+    lyricSequenceVersion: 2,
+    bakedCalibrationVersion: BAKED_CALIBRATION_VERSION
+  });
+}
+let lineStarts = (saved.lineStarts && saved.lineStarts.length === 53) ? saved.lineStarts : defaultLineStarts();
+let charOverrides = saved.charOverrides || defaultCharOverrides();
+// Lines 33–53 have moved relative to earlier builds. Do not treat their old
+// timestamp/character calibration as valid for the revised ordering.
+if(saved.lyricSequenceVersion!==2){
+ for(let i=32;i<FULL_LINE_COUNT;i++)delete charOverrides[i];
+ saved=saveState({charOverrides,isCalibrated:false,lyricSequenceVersion:2});
+}
+
+
+function charStartsForLine(i){
+  const n = ALL_LINES[i].hanzi.length;
+  const ov = charOverrides[i];
+  if(ov && ov.length === n){
+    if(i===FULL_LINE_COUNT-1 && activeDuration()>LYRIC_END_TIME){
+      const effective=ov.slice();
+      effective[n-1]=Math.min(effective[n-1],LYRIC_END_TIME-0.16);
+      return effective;
+    }
+    return ov;
+  }
+  const start = lineStarts[i];
+  const end = (i+1 < N_LINES) ? lineStarts[i+1] : Math.min(activeDuration(), LYRIC_END_TIME);
+  const dur = Math.max(0.2, end-start);
+  const per = dur/n;
+  return Array.from({length:n}, (_,k)=> start + k*per);
+}
+function lineFillPct(lineIdx, t){
+  const starts = charStartsForLine(lineIdx);
+  const n = starts.length;
+  const lineEnd = (lineIdx+1<N_LINES) ? lineStarts[lineIdx+1] : Math.min(activeDuration(), LYRIC_END_TIME);
+  if(t <= starts[0]) return {pct:0, idx:0};
+  if(t >= lineEnd) return {pct:100, idx:n-1};
+  let idx = 0;
+  for(let k=0;k<n;k++){ if(t>=starts[k]) idx=k; }
+  const segStart = starts[idx];
+  const segEnd = (idx+1<n) ? starts[idx+1] : lineEnd;
+  const frac = Math.min(1, Math.max(0,(t-segStart)/Math.max(0.05,segEnd-segStart)));
+  return {pct: ((idx + frac) / n) * 100, idx};
+}
+
+/* ================= STATE ================= */
+mode = saved.mode || 'sung';
+silentBaseMode = saved.silentBaseMode || 'sung';
+rebuildSongData();
+let showHanzi = saved.showHanzi !== undefined ? saved.showHanzi : true;
+let showPinyin = saved.showPinyin !== undefined ? saved.showPinyin : true;
+let showEnglish = !!saved.showEnglish;
+let speed = saved.speed || 1;
+let quizOn = !!saved.quizOn;
+let quizPct = saved.quizPct || 25;
+let hiddenSet = new Set(saved.hiddenChars || []);
+let loopRange = null;
+let currentLineIdx = -1;
+let viewMode = saved.viewMode || 'section';
+let textSize = saved.textSize || 1;
+let starCount = 0;
+let lastLineForStar = -1;
+let renderedOccKey = null;
+let lastPopKey = null;
+
+const vocalsEl = document.getElementById('vocalsEl');
+const bgmEl = document.getElementById('bgmEl');
+function activeAudio(){ return (mode === 'sung' || (mode === 'silent' && silentBaseMode === 'sung')) ? vocalsEl : bgmEl; }
+function activeDuration(){ return (mode === 'sung' || (mode === 'silent' && silentBaseMode === 'sung')) ? AUDIO_DURATION : BGM_DURATION; }
+
+let appReady = false;
+function applyMode(newMode, keepTime){
+  // Switching never carries the old timestamp or continues playing.
+  vocalsEl.pause(); bgmEl.pause();
+  if(typeof calActive!=='undefined') calActive=false;
+  if(typeof fineActive!=='undefined') fineActive=false;
+  if(newMode !== 'silent') silentBaseMode = newMode;
+  mode = newMode;
+  rebuildSongData();
+  vocalsEl.currentTime = 0; bgmEl.currentTime = 0;
+  const a = activeAudio();
+  a.volume = (mode === 'silent') ? 0 : 1;
+  vocalsEl.playbackRate = speed; bgmEl.playbackRate = speed;
+  document.getElementById('seekBar').max = activeDuration();
+  document.getElementById('seekBar').value = 0;
+  document.getElementById('tCur').textContent = '0:00';
+  document.getElementById('tDur').textContent = fmtTime(activeDuration());
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
+  currentLineIdx=-1; lastLineForStar=-1; lastPopKey=null;
+  loopRange=null; resetStars();
+  if(typeof renderLoopBadge==='function') renderLoopBadge();
+  if(appReady) renderChips();
+  if(appReady) initDots();
+  if(appReady) refreshFineOptions();
+  if(appReady) renderList();
+  if(appReady) forceRerender();
+  if(appReady) setPlayIcon(false);
+  const calLabel = document.getElementById('calModeLabel');
+  if(calLabel) calLabel.textContent = 'Calibration: Full 53-line Sung version (first 32 shared with BGM Only)';
+  saveState({mode, silentBaseMode});
+}
+
+/* ================= header collapse ================= */
+document.getElementById('hideHeaderBtn').addEventListener('click', (e)=>{
+  const h = document.getElementById('mainHeader');
+  h.classList.toggle('collapsed');
+  const collapsed = h.classList.contains('collapsed');
+  e.currentTarget.lastChild.textContent = collapsed ? ' Show header' : ' Hide header';
+});
+
+/* ================= mode / speed ================= */
+document.getElementById('modeSeg').addEventListener('click', e=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  applyMode(btn.dataset.mode);
+});
+document.getElementById('speedSeg').addEventListener('click', e=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  speed = +btn.dataset.speed;
+  document.querySelectorAll('#speedSeg button').forEach(b=>b.classList.toggle('active', +b.dataset.speed===speed));
+  vocalsEl.playbackRate = speed; bgmEl.playbackRate = speed;
+  try{ vocalsEl.preservesPitch = true; bgmEl.preservesPitch = true; }catch(e){}
+  saveState({speed});
+});
+
+/* ================= display toggles ================= */
+const hanziBtn = document.getElementById('toggleHanzi');
+const pinyinBtn = document.getElementById('togglePinyin');
+const englishBtn = document.getElementById('toggleEnglish');
+function syncDisplayBtns(){
+  hanziBtn.classList.toggle('active', showHanzi);
+  pinyinBtn.classList.toggle('active', showPinyin);
+  englishBtn.classList.toggle('active', showEnglish);
+}
+hanziBtn.addEventListener('click', ()=>{ showHanzi=!showHanzi; syncDisplayBtns(); saveState({showHanzi}); forceRerender(); });
+pinyinBtn.addEventListener('click', ()=>{ showPinyin=!showPinyin; syncDisplayBtns(); saveState({showPinyin}); forceRerender(); });
+englishBtn.addEventListener('click', ()=>{ showEnglish=!showEnglish; syncDisplayBtns(); saveState({showEnglish}); forceRerender(); });
+syncDisplayBtns();
+
+/* ================= view mode ================= */
+const lyricsPanelEl = document.getElementById('lyricsPanel');
+const lineStageEl = document.getElementById('lineStage');
+function applyViewMode(){
+  document.querySelectorAll('#viewSeg button').forEach(b=>b.classList.toggle('active', b.dataset.view===viewMode));
+  document.querySelector('.panel-wrap').style.display = viewMode==='section' ? 'block':'none';
+  lineStageEl.style.display = viewMode==='line' ? 'block':'none';
+}
+document.getElementById('viewSeg').addEventListener('click', e=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  viewMode = btn.dataset.view; saveState({viewMode}); applyViewMode(); forceRerender();
+});
+applyViewMode();
+
+/* ================= text size ================= */
+function applyTextSize(){ document.documentElement.style.setProperty('--stage-scale', textSize); }
+document.getElementById('sizeBtns').addEventListener('click', e=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  const delta = +btn.dataset.size;
+  textSize = Math.max(0.75, Math.min(1.6, +(textSize*delta).toFixed(2)));
+  saveState({textSize}); applyTextSize();
+});
+applyTextSize();
+
+/* ================= stars / celebration ================= */
+const starBadge = document.getElementById('starBadge');
+const starCountText = document.getElementById('starCountText');
+function addStar(n){
+  starCount += n;
+  starCountText.textContent = starCount;
+  starBadge.classList.remove('pop'); void starBadge.offsetWidth; starBadge.classList.add('pop');
+}
+function resetStars(){
+  starCount = 0;
+  starCountText.textContent = '0';
+}
+function spawnFloatStar(x, y){
+  const s = document.createElement('div');
+  s.className='float-star'; s.textContent = ['✨','⭐','🌟'][Math.floor(Math.random()*3)];
+  s.style.left = x+'px'; s.style.top = y+'px'; s.style.position='absolute';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(), 700);
+}
+function confettiBurst(){
+  const emojis = ['🎉','⭐','🎊','✨','🎵'];
+  for(let i=0;i<24;i++){
+    const p = document.createElement('div');
+    p.className='confetti-piece'; p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left = Math.random()*100+'vw';
+    p.style.animationDuration = (1.6+Math.random()*1.2)+'s';
+    p.style.fontSize = (16+Math.random()*14)+'px';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 3000);
+  }
+  flash('Song complete! Great job!');
+}
+
+/* ================= navigation (tab bar + text links + back links) ================= */
+const miniPlayer = document.getElementById('miniPlayer');
+const navCenter = document.getElementById('navCenter');
+function showScreen(name){
+  if(name==='calibrate') {clearLoop();activeAudio().pause();}
+  else if(document.getElementById('screen-calibrate').classList.contains('active')){vocalsEl.pause();clearLoop();fineActive=false;fineTapBtn.disabled=true;}
+  // One calibration only: always use the full Sung recording (53 lines).
+  // BGM uses the first 32 exact same line and character timestamps.
+  if(name==='calibrate' && mode!=='sung') applyMode('sung');
+  if(name==='calibrate'){ vocalsEl.pause(); bgmEl.pause(); calActive=false; initDots(); updateCalUI(); }
+  document.querySelectorAll('.tabbar button[data-screen]').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  miniPlayer.classList.toggle('hide', name!=='practice');
+  navCenter.classList.toggle('show-play', name==='practice'); // Practice: Play button in the center slot; elsewhere: Xavier logo
+  window.scrollTo(0,0); // explicit, user-initiated navigation only — not a "camera lock"
+}
+document.querySelectorAll('.tabbar button[data-screen]').forEach(btn=>{
+  btn.addEventListener('click', ()=> showScreen(btn.dataset.screen));
+});
+document.querySelectorAll('[data-goto]').forEach(btn=>{
+  btn.addEventListener('click', ()=> showScreen(btn.dataset.goto));
+});
+
+/* ================= section chips ================= */
+const chipsEl = document.getElementById('sectionChips');
+function renderChips(){
+  chipsEl.innerHTML='';
+  SONG_SECTIONS.forEach((sec,i)=>{
+    const chip=document.createElement('button');
+    chip.className='chip'; chip.textContent=`${i+1}. ${sec.name}`;
+    chip.addEventListener('click',()=>seekTo(lineStarts[SECTION_OCCURRENCES[i].startIdx]));
+    chipsEl.appendChild(chip);
+  });
+}
+renderChips();
+
+/* ================= ruby (pinyin-above-character) rendering helpers ================= */
+function rubyRowHtml(lineIdx){
+  const line = ALL_LINES[lineIdx];
+  let html = '';
+  for(let k=0;k<line.hanzi.length;k++){
+    const hidden = hiddenSet.has(lineIdx+'-'+k);
+    const base = hidden ? '<span class="quiz-blank"></span>' : line.hanzi[k];
+    if(showPinyin){
+      html += `<ruby>${base}<rt>${line.pinyin[k]}</rt></ruby>`;
+    } else {
+      html += `<span class="ruby-noop">${base}</span>`;
+    }
+  }
+  html += `<span class="punct">${line.punct}</span>`;
+  return html;
+}
+function plainPinyinOnly(lineIdx){
+  return `<span class="plain-py">${ALL_LINES[lineIdx].pinyin.join(' ')}</span>`;
+}
+function lineContentHtml(lineIdx){
+  if(showHanzi) return rubyRowHtml(lineIdx);
+  if(showPinyin) return plainPinyinOnly(lineIdx);
+  return '';
+}
+
+/* ================= full song list =================
+   While the song is PLAYING, the current line is kept centered within this
+   list's own small scroll box (a self-contained "now playing" follow, like a
+   lyrics view) — this only ever adjusts listEl's internal scrollTop directly,
+   never scrollIntoView, so it can NEVER drag the whole page/camera around.
+   The moment playback is paused/stopped, this stops entirely and the user
+   can freely scroll the list themselves without it snapping back. */
+const listEl = document.getElementById('lyricList');
+function centerCurrentInList(){
+  const row = listEl.querySelector('.lline.current-line');
+  if(!row) return;
+  // row.offsetTop is relative to its offsetParent (not necessarily listEl), so measure
+  // via bounding rects instead to get a position that's actually relative to listEl's own scroll content.
+  const rowRect = row.getBoundingClientRect();
+  const listRect = listEl.getBoundingClientRect();
+  const rowTopWithinList = (rowRect.top - listRect.top) + listEl.scrollTop;
+  const target = rowTopWithinList - (listEl.clientHeight/2) + (rowRect.height/2);
+  listEl.scrollTo({ top: Math.max(0, target), behavior:'smooth' });
+}
+function renderList(){
+  listEl.innerHTML='';
+  ALL_LINES.forEach((line, i)=>{
+    const row = document.createElement('div');
+    row.className = 'lline' + (i===currentLineIdx ? ' current-line':'');
+    row.dataset.idx = i;
+    const idx = document.createElement('div'); idx.className='idx'; idx.textContent=i+1;
+    const txt = document.createElement('div'); txt.className='txt';
+    const hz = document.createElement('div'); hz.className='hz2';
+    hz.innerHTML = lineContentHtml(i);
+    txt.appendChild(hz);
+    const loopBtn = document.createElement('button');
+    loopBtn.className='loopbtn' + (loopRange && loopRange.singleLine===i ? ' on':'');
+    loopBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>';
+    loopBtn.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      if(loopRange && loopRange.singleLine===i){ clearLoop(); }
+      else{ const end = (i+1<N_LINES)?lineStarts[i+1]:activeDuration(); setLoop(lineStarts[i], end, `Line ${i+1}`, i); }
+      renderList();
+    });
+    row.appendChild(idx); row.appendChild(txt); row.appendChild(loopBtn);
+    row.addEventListener('click', ()=> seekTo(lineStarts[i]));
+    listEl.appendChild(row);
+  });
+  // NOTE: intentionally no scrollIntoView here — this list never auto-scrolls itself or the page.
+}
+
+/* ================= lyrics panel (section view, fully free-scroll, no auto camera) ================= */
+function forceRerender(){ renderedOccKey=null; renderPanel(); renderLineStage(); }
+
+function renderPanel(){
+  const occ = currentLineIdx<0 ? SECTION_OCCURRENCES[0] : occurrenceForLine(currentLineIdx);
+  const key = occ.sectionIdx+':'+SECTION_OCCURRENCES.indexOf(occ)+':'+currentLineIdx+':'+showHanzi+':'+showPinyin+':'+showEnglish+':'+quizOn+':'+hiddenSet.size;
+  if(key !== renderedOccKey){
+    renderedOccKey = key;
+    buildPanelDom(occ);
+  }
+  updateJumpButton();
+}
+
+function fillSpanHtml(html){
+  return `<span class="fillwrap"><span class="fb">${html}</span><span class="ft">${html}</span></span>`;
+}
+// The two-layer fill technique (.fb grey base + .ft colored clipped top layer) only works
+// correctly when both layers render as a SINGLE line — if the text were allowed to wrap, the
+// two layers could wrap at different points (since .ft's width:X% clip behaves differently from
+// .fb's natural flow) and visually overlap/double up. Both layers are forced nowrap in CSS to
+// guarantee they always match; this shrinks the font size after the fact if that single line
+// would otherwise overflow its container (mainly long pinyin-only lines, or bigger text-size
+// settings) so it fits without spilling past the card edge.
+function fitFillWrap(wrapEl){
+  if(!wrapEl) return;
+  wrapEl.style.fontSize = '';
+  const avail = wrapEl.parentElement ? wrapEl.parentElement.clientWidth : 0;
+  const natural = wrapEl.scrollWidth;
+  if(avail > 0 && natural > avail){
+    const baseSize = parseFloat(getComputedStyle(wrapEl).fontSize) || 16;
+    const fitted = Math.max(baseSize * (avail / natural) * 0.96, 10);
+    wrapEl.style.fontSize = fitted + 'px';
+  }
+}
+
+function buildPanelDom(occ){
+  lyricsPanelEl.innerHTML='';
+  const label = document.createElement('div');
+  label.className='sec-label'; label.textContent = occ.name;
+  lyricsPanelEl.appendChild(label);
+  for(let li=occ.startIdx; li<=occ.endIdx; li++){
+    const div = document.createElement('div');
+    let cls='sec-line';
+    if(li<currentLineIdx) cls+=' past';
+    else if(li>currentLineIdx) cls+=' future';
+    else cls+=' now';
+    div.className=cls; div.dataset.li = li;
+    const isNow = (li===currentLineIdx);
+    const content = lineContentHtml(li);
+    if(content){
+      const hz=document.createElement('div'); hz.className='hz';
+      hz.innerHTML = isNow ? fillSpanHtml(content) : content;
+      div.appendChild(hz);
+    }
+    if(showEnglish){
+      const en=document.createElement('div'); en.className='en';
+      en.textContent = ALL_LINES[li].en;
+      div.appendChild(en);
+    }
+    lyricsPanelEl.appendChild(div);
+  }
+  fitFillWrap(lyricsPanelEl.querySelector('.sec-line.now .fillwrap')); // measure only once actually attached to the document
+}
+
+function updateFillGradients(){
+  if(currentLineIdx<0 || viewMode!=='section') return;
+  const t = activeAudio().currentTime;
+  const {pct, idx} = lineFillPct(currentLineIdx, t);
+  const nowEl = lyricsPanelEl.querySelector('.sec-line.now');
+  if(nowEl){
+    const fts = nowEl.querySelectorAll('.ft');
+    fts.forEach(el=> el.style.width = pct+'%');
+    maybePopStar(currentLineIdx, idx, nowEl.querySelector('.ft'));
+  }
+}
+function maybePopStar(lineIdx, idx, ftEl){
+  const key = lineIdx+'-'+idx;
+  if(key===lastPopKey || !ftEl) return;
+  lastPopKey = key;
+  const r = ftEl.getBoundingClientRect();
+  if(r.width>0) spawnFloatStar(r.right + window.scrollX, r.top + window.scrollY);
+}
+
+lyricsPanelEl.addEventListener('scroll', updateJumpButton);
+const jumpBtn = document.getElementById('jumpBtn');
+function updateJumpButton(){
+  const nowEl = lyricsPanelEl.querySelector('.sec-line.now');
+  if(!nowEl){ jumpBtn.classList.remove('show'); return; }
+  const pr = lyricsPanelEl.getBoundingClientRect();
+  const er = nowEl.getBoundingClientRect();
+  const visible = er.top >= pr.top-4 && er.bottom <= pr.bottom+4;
+  jumpBtn.classList.toggle('show', !visible);
+}
+// Jump only ever happens when the user explicitly taps this button — never automatically.
+jumpBtn.addEventListener('click', ()=>{
+  const nowEl = lyricsPanelEl.querySelector('.sec-line.now');
+  if(nowEl) nowEl.scrollIntoView({block:'center', behavior:'smooth'});
+});
+// While PLAYING, keep the current line vertically centered in this panel's own scroll box —
+// same pattern as the full-song list below: only ever touches lyricsPanelEl's own scrollTop
+// directly (never scrollIntoView), so it can't drag the whole page around. Stops the instant
+// playback is paused, so the jump button above still handles the manual/paused case.
+function centerCurrentInPanel(){
+  const nowEl = lyricsPanelEl.querySelector('.sec-line.now');
+  if(!nowEl) return;
+  const rowRect = nowEl.getBoundingClientRect();
+  const panelRect = lyricsPanelEl.getBoundingClientRect();
+  const rowTopWithinPanel = (rowRect.top - panelRect.top) + lyricsPanelEl.scrollTop;
+  const target = rowTopWithinPanel - (lyricsPanelEl.clientHeight/2) + (rowRect.height/2);
+  lyricsPanelEl.scrollTo({ top: Math.max(0, target), behavior:'smooth' });
+}
+
+/* ================= line view (single line, two-layer fill) ================= */
+const lsHz = document.getElementById('lsHz'), lsEn = document.getElementById('lsEn');
+function renderLineStage(){
+  if(viewMode!=='line') return;
+  if(currentLineIdx<0){ lsHz.textContent='—'; lsEn.textContent=''; return; }
+  const line = ALL_LINES[currentLineIdx];
+  lsEn.style.display = showEnglish?'block':'none';
+  lsHz.innerHTML = fillSpanHtml(lineContentHtml(currentLineIdx));
+  fitFillWrap(lsHz.querySelector('.fillwrap'));
+  if(showEnglish) lsEn.textContent = line.en;
+}
+function updateLineStageFill(){
+  if(viewMode!=='line' || currentLineIdx<0) return;
+  const t = activeAudio().currentTime;
+  const {pct, idx} = lineFillPct(currentLineIdx, t);
+  lsHz.querySelectorAll('.ft').forEach(el=> el.style.width = pct+'%');
+  maybePopStar(currentLineIdx, idx, lsHz.querySelector('.ft'));
+}
+
+/* ================= playback tick ================= */
+function fmtTime(t){ if(!isFinite(t)) t=0; const m=Math.floor(t/60), s=Math.floor(t%60); return m+':'+String(s).padStart(2,'0'); }
+const seekBar = document.getElementById('seekBar');
+const tCur = document.getElementById('tCur');
+const tDur = document.getElementById('tDur');
+tDur.textContent = fmtTime(activeDuration());
+let seeking=false;
+seekBar.addEventListener('input', ()=>{ seeking=true; tCur.textContent=fmtTime(+seekBar.value); });
+seekBar.addEventListener('change', ()=>{ seekTo(+seekBar.value); seeking=false; });
+function seekTo(t){
+  if(t < 0.15) resetStars(); // jumping back to the very start = a fresh run, so the star count restarts too
+  vocalsEl.currentTime = Math.min(t, AUDIO_DURATION - 0.05); bgmEl.currentTime = Math.min(t, BGM_DURATION - 0.05);
+}
+
+function tick(){
+  const a = activeAudio();
+  const t = a.currentTime;
+  if(!seeking){ seekBar.value = t; tCur.textContent = fmtTime(t); }
+  if(loopRange){
+    // Never trust a cached range for character fine-tuning. Read currently APPLIED
+    // lineStarts on every tick, including after JSON import or line recalibration.
+    if(loopRange.isFine){
+      const i=loopRange.fineLineIdx;
+      const start=lineStarts[i];
+      const end=(i+1<FULL_LINE_COUNT)?lineStarts[i+1]:LYRIC_END_TIME;
+      if(!(Number.isFinite(start)&&Number.isFinite(end)&&end>start)){
+        vocalsEl.pause();clearLoop();
+      }else if(!vocalsEl.paused && (vocalsEl.currentTime>=end-0.025 || vocalsEl.currentTime<start-0.1)){
+        vocalsEl.currentTime=start;
+      }
+    }else if(!a.paused && a.currentTime>=loopRange.end-0.025){
+      seekTo(loopRange.start);
+    }
+  }
+
+  let li = -1;
+  for(let i=0;i<N_LINES;i++){ if(t>=lineStarts[i]) li=i; }
+  if(li !== currentLineIdx){
+    const wasPlaying = !a.paused;
+    if(wasPlaying && li===currentLineIdx+1 && li>lastLineForStar){ addStar(1); lastLineForStar=li; }
+    currentLineIdx = li;
+    renderList();
+    if(wasPlaying) centerCurrentInList(); // only auto-follows while actually playing; paused = free scroll
+    renderPanel();
+    if(wasPlaying) centerCurrentInPanel(); // same auto-follow, same play-only rule, for the Section view panel
+    renderLineStage();
+  }
+  updateFillGradients();
+  updateLineStageFill();
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ================= play/pause ================= */
+const playBtn = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+function setPlayIcon(playing){
+  playIcon.innerHTML = playing
+    ? '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>'
+    : '<polygon points="6 4 20 12 6 20 6 4"></polygon>';
+}
+playBtn.addEventListener('click', ()=>{
+  const a = activeAudio();
+  if(a.paused){
+    // pressing Play after the song already finished = starting a new run, so rewind first
+    if(a.currentTime >= activeDuration() - 0.2) seekTo(0);
+    a.play().catch(()=>{});
+  } else { a.pause(); }
+});
+[vocalsEl,bgmEl].forEach(a=>{
+  a.addEventListener('play', ()=> setPlayIcon(true));
+  a.addEventListener('pause', ()=> setPlayIcon(false));
+  a.addEventListener('ended', ()=>{ setPlayIcon(false); if(!loopRange) confettiBurst(); });
+});
+
+/* ================= loop ================= */
+function setLoop(start,end,label,singleLine,isFine=false){ loopRange = {start,end,label,singleLine,isFine}; renderLoopBadge(); }
+let fineLoopRequestId = 0;
+function clearLoop(){
+  fineLoopRequestId++;
+  loopRange=null;renderLoopBadge();renderList();
+}
+function waitForMediaEvent(media,event,timeout=5000){
+  return new Promise((resolve,reject)=>{
+    let done=false;
+    const cleanup=()=>{media.removeEventListener(event,onEvent);media.removeEventListener('error',onError);clearTimeout(timer);};
+    const onEvent=()=>{if(done)return;done=true;cleanup();resolve();};
+    const onError=()=>{if(done)return;done=true;cleanup();reject(new Error('Audio loading failed'));};
+    const timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error('Timed out waiting for audio '+event));},timeout);
+    media.addEventListener(event,onEvent,{once:true});media.addEventListener('error',onError,{once:true});
+  });
+}
+async function seekVocalsPrecisely(target,requestId){
+  const a=vocalsEl;
+  if(a.readyState===0){a.load();await waitForMediaEvent(a,'loadedmetadata',9000);}
+  if(requestId!==fineLoopRequestId) return false;
+  if(!Number.isFinite(a.duration)||target>=a.duration)throw new Error('Requested timestamp exceeds the recording duration');
+  if(Math.abs(a.currentTime-target)>0.06){
+    const seekDone=waitForMediaEvent(a,'seeked',9000);
+    a.currentTime=target;
+    await seekDone;
+  }
+  if(requestId!==fineLoopRequestId)return false;
+  if(Math.abs(a.currentTime-target)>0.3)throw new Error('Player did not seek to the requested timestamp');
+  return true;
+}
+// The audio track is authoritative: repeat as soon as its position reaches the
+// NEXT line start. This works even if the normal UI animation is throttled.
+vocalsEl.addEventListener('timeupdate',()=>{
+  if(!loopRange?.isFine||vocalsEl.paused||vocalsEl.seeking)return;
+  const i=loopRange.fineLineIdx,start=lineStarts[i];
+  const end=i+1<FULL_LINE_COUNT?lineStarts[i+1]:AUDIO_DURATION;
+  if(Number.isFinite(start)&&Number.isFinite(end)&&end>start &&
+      (vocalsEl.currentTime>=end-0.02 || vocalsEl.currentTime<start-0.25)){
+    vocalsEl.currentTime=start;
+  }
+});
+function renderLoopBadge(){ document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); }
+
+/* ================= quiz mode ================= */
+const quizToggle = document.getElementById('quizToggle');
+const quizControls = document.getElementById('quizControls');
+const quizPctInput = document.getElementById('quizPct');
+const quizPctVal = document.getElementById('quizPctVal');
+quizToggle.checked = quizOn;
+quizControls.style.display = quizOn ? 'block':'none';
+quizPctInput.value = quizPct; quizPctVal.textContent = quizPct+'%';
+function rerollQuiz(){
+  hiddenSet = new Set();
+  const allSlots = [];
+  ALL_LINES.forEach((line,i)=>{ for(let k=0;k<line.hanzi.length;k++) allSlots.push(i+'-'+k); });
+  const nHide = Math.round(allSlots.length * quizPct/100);
+  const shuffled = allSlots.sort(()=>Math.random()-0.5);
+  shuffled.slice(0,nHide).forEach(s=>hiddenSet.add(s));
+  saveState({hiddenChars:[...hiddenSet]});
+  forceRerender(); renderList();
+}
+quizToggle.addEventListener('change', ()=>{
+  quizOn = quizToggle.checked; quizControls.style.display = quizOn?'block':'none'; saveState({quizOn});
+  if(quizOn && hiddenSet.size===0) rerollQuiz(); else { forceRerender(); renderList(); }
+  if(!quizOn){ hiddenSet=new Set(); saveState({hiddenChars:[]}); forceRerender(); renderList(); }
+});
+quizPctInput.addEventListener('input', ()=>{ quizPct=+quizPctInput.value; quizPctVal.textContent=quizPct+'%'; saveState({quizPct}); });
+document.getElementById('quizReroll').addEventListener('click', rerollQuiz);
+
+/* ================= SIMPLE, SELECTABLE LINE CALIBRATION ================= */
+// New lyric order: preserve draft line timings 1–32, require fresh timestamps from line 33 onward.
+const CAL_DRAFT_KEY=STORAGE_KEY+'_line_draft_v2';
+const PREVIOUS_CAL_DRAFT_KEY=STORAGE_KEY+'_line_draft_v1';
+if(localStorage.getItem(CAL_DRAFT_KEY)===null){
+ const oldDraft=readOldDraftForLyricsMigration();
+ if(oldDraft)try{localStorage.setItem(CAL_DRAFT_KEY,JSON.stringify(oldDraft.slice(0,32).concat(Array(21).fill(null))));}catch(e){}
+}
+function readOldDraftForLyricsMigration(){
+ try{const old=JSON.parse(localStorage.getItem(PREVIOUS_CAL_DRAFT_KEY));return Array.isArray(old)&&old.length===FULL_LINE_COUNT?old:null;}catch(e){return null;}
+}
+function readLocalJson(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v??fallback;}catch(e){return fallback;}}
+let calTaps=readLocalJson(CAL_DRAFT_KEY,[]);
+if(!Array.isArray(calTaps)||calTaps.length!==FULL_LINE_COUNT)calTaps=saved.isCalibrated?lineStarts.slice():Array(FULL_LINE_COUNT).fill(null);
+calTaps=calTaps.map(x=>typeof x==='number'&&Number.isFinite(x)?x:null);
+let calSelected=Math.max(0,calTaps.findIndex(x=>x===null));
+let calHistory=[];
+let fineControlsReady=false;
+let calActive=false;
+const calTapBtn=document.getElementById('calTapBtn');
+const calNextHz=document.getElementById('calNextHz');
+const calProgress=document.getElementById('calProgress');
+const calClock=document.getElementById('calClock');
+const calDots=document.getElementById('calDots');
+const calApplyBtn=document.getElementById('calApply');
+const calSeek=document.getElementById('calSeek');
+const calPlayPause=document.getElementById('calPlayPause');
+function flash(msg){const f=document.getElementById('flash');f.textContent=msg;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1800);}
+function persistCal(){try{localStorage.setItem(CAL_DRAFT_KEY,JSON.stringify(calTaps));}catch(e){}}
+function calCount(){return calTaps.filter(x=>x!==null).length;}
+function nextUnfinished(){return calTaps.findIndex(x=>x===null);}
+function firstChronologyConflict(times){
+ for(let i=1;i<times.length;i++){
+  if(times[i]!==null && times[i-1]!==null && times[i]<=times[i-1])return i;
+ }
+ return -1;
+}
+function initDots(){
+ calDots.innerHTML='';
+ for(let i=0;i<FULL_LINE_COUNT;i++){
+  const btn=document.createElement('button');btn.type='button';btn.dataset.idx=i;
+  btn.setAttribute('aria-label',`Select line ${i+1}`);
+  btn.addEventListener('click',()=>{calSelected=i;updateCalUI();}); // Selection NEVER seeks or pauses audio.
+  calDots.appendChild(btn);
+ }
+ updateCalUI();
+}
+function characterTimingStatus(i){
+ const times=charOverrides[i],n=FULL_SONG_LINES[i].hanzi.length;
+ if(!Array.isArray(times))return "missing";
+ if(times.length!==n||!times.every(t=>typeof t==="number"&&Number.isFinite(t)))return "invalid";
+ const start=lineStarts[i],end=(i+1<FULL_LINE_COUNT)?lineStarts[i+1]:AUDIO_DURATION;
+ if(times.some((t,k)=>t<start-0.01||t>=end|| (k>0&&t<=times[k-1])))return "invalid";
+ return "valid";
+}
+function linesAppliedAndComplete(){
+ return loadState().isCalibrated===true && calCount()===FULL_LINE_COUNT &&
+   firstChronologyConflict(calTaps)===-1 &&
+   calTaps.every((t,i)=>t!==null && Math.abs(t-lineStarts[i])<0.005);
+}
+function updateFineLock(){
+ const unlocked=linesAppliedAndComplete();
+ const lockMessage=document.getElementById('fineLockMessage');
+ const conflict=firstChronologyConflict(calTaps);
+ if(lockMessage)lockMessage.textContent=unlocked
+  ? 'Choose a line to loop from its calibrated start to the next line. The final lyric ends at 4:32; the instrumental outro plays normally.'
+  : calCount()!==FULL_LINE_COUNT
+    ? `Complete and apply all 53 line timestamps first (${calCount()} / ${FULL_LINE_COUNT} captured). Times may be entered in any order.`
+    : conflict!==-1
+      ? `Character calibration locked: Line ${conflict+1} must start after Line ${conflict}. Correct the timestamps, then apply all 53 lines.`
+      : 'All timestamps recorded. Press Apply all 53 lines to unlock character calibration.';
+ if(typeof fineLoopBtn!=='undefined')fineLoopBtn.disabled=!unlocked;
+ if(typeof fineSelect!=='undefined')fineSelect.disabled=!unlocked;
+ if(typeof fineTapBtn!=='undefined')fineTapBtn.disabled=!unlocked || !fineActive;
+ if(typeof fineApplyBtn!=='undefined')fineApplyBtn.disabled=!unlocked || fineTaps.length===0;
+ if(typeof fineClearBtn!=='undefined')fineClearBtn.disabled=!unlocked;
+}
+function updateCalUI(){
+ if(!calDots.children.length)return;
+ calNextHz.textContent=FULL_SONG_LINES[calSelected].hanzi;
+ document.getElementById('calLineLabel').textContent=`SELECTED LINE ${calSelected+1} / ${FULL_LINE_COUNT}`;
+ const savedTime=calTaps[calSelected];
+ document.getElementById('calSavedLabel').textContent=savedTime===null?'Not yet calibrated':`Saved at ${savedTime.toFixed(2)} seconds`;
+ calProgress.textContent=`${calCount()} / ${FULL_LINE_COUNT} lines captured`;
+ calClock.textContent=fmtTime(vocalsEl.currentTime);
+ calPlayPause.textContent=vocalsEl.paused?'▶ Play':'Ⅱ Pause';
+ [...calDots.children].forEach((d,i)=>{
+  const timed=calTaps[i]!==null;
+  const charStatus=timed?characterTimingStatus(i):"missing";
+  const chars=charStatus==="valid";
+  d.className=(timed?'timed ':'')+(chars?'fine-timed ':'')+(charStatus==='invalid'?'needs-review ':'')+(i===calSelected?'selected':'');
+  d.innerHTML=`<span class="cal-number">${i+1}</span>${timed?`<span class="cal-check">${chars?'✓✓':'✓'}</span>`:''}`;
+  d.title=`Line ${i+1}: ${FULL_SONG_LINES[i].hanzi} — ${timed?calTaps[i].toFixed(2)+'s':'not timed'}; characters ${charStatus}`;
+ });
+ const conflict=firstChronologyConflict(calTaps);
+ calApplyBtn.disabled=calCount()!==FULL_LINE_COUNT || conflict!==-1;
+ calApplyBtn.title=conflict!==-1
+   ? `Fix line ${conflict+1}: its timestamp must be later than line ${conflict}.`
+   : calCount()!==FULL_LINE_COUNT ? 'Capture all 53 line starts first.' : 'Apply validated line timing.';
+ // This is also called before the fine-tune controls initialize.
+ if(fineControlsReady)updateFineLock();
+}
+calPlayPause.addEventListener('click',()=>{if(vocalsEl.paused){bgmEl.pause();vocalsEl.playbackRate=1;vocalsEl.play().catch(()=>flash('Audio could not play.'));}else vocalsEl.pause();updateCalUI();});
+calSeek.addEventListener('input',()=>{vocalsEl.currentTime=+calSeek.value;calClock.textContent=fmtTime(vocalsEl.currentTime);});
+function doTap(){
+ const i=calSelected,t=+vocalsEl.currentTime.toFixed(2);
+ const old=calTaps[i];
+ const oldChars=Array.isArray(charOverrides[i])?charOverrides[i].slice():null;
+ calHistory.push({i,old,oldChars});
+ calTaps[i]=t;
+ // Recalibrating any already-saved line explicitly resets its individual character timings.
+ if(old!==null&&charOverrides[i]){
+  delete charOverrides[i];saveState({charOverrides});refreshExportJson();
+  if(typeof fineSelect!=='undefined'&&fineSelect.options[i])fineSelect.options[i].textContent=`${i+1}. ${FULL_SONG_LINES[i].hanzi}`;
+ }
+ persistCal();
+ if(fineControlsReady)fineUpdateUI();
+ // Advance naturally during continuous calibration; when correcting an older line, return to the next unfinished line.
+ const unfinished=nextUnfinished();
+ if(old===null && i+1<FULL_LINE_COUNT && calTaps[i+1]===null)calSelected=i+1;
+ else if(unfinished>=0)calSelected=unfinished;
+ else calSelected=Math.min(i+1,FULL_LINE_COUNT-1);
+ updateCalUI();
+ if(calCount()===FULL_LINE_COUNT){
+  const conflict=firstChronologyConflict(calTaps);
+  flash(conflict!==-1
+   ? `All lines captured. Correct order: line ${conflict+1} must start after line ${conflict}.`
+   : 'All 53 lines saved! Press Apply all 53 lines.');
+ }
+}
+calTapBtn.addEventListener('click',doTap);
+document.addEventListener('keydown',e=>{
+ if(e.code==='Space'&&document.getElementById('screen-calibrate').classList.contains('active')&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)){
+  e.preventDefault();doTap();
+ }
+});
+document.getElementById('calUndo').addEventListener('click',()=>{
+ const last=calHistory.pop();if(!last){flash('No recent tap to undo.');return;}
+ calTaps[last.i]=last.old;
+ if(last.oldChars)charOverrides[last.i]=last.oldChars;else delete charOverrides[last.i];
+ saveState({charOverrides});persistCal();refreshExportJson();
+ calSelected=last.i;updateCalUI();flash(`Undid line ${last.i+1}.`);
+});
+document.getElementById('calReset').addEventListener('click',()=>{
+ if(!confirm('Clear line calibration draft? Already applied timing remains saved.'))return;
+ vocalsEl.pause();calTaps=Array(FULL_LINE_COUNT).fill(null);calSelected=0;calHistory=[];persistCal();updateCalUI();
+});
+setInterval(()=>{if(document.getElementById('screen-calibrate').classList.contains('active')){
+ calClock.textContent=fmtTime(vocalsEl.currentTime);
+ if(document.activeElement!==calSeek)calSeek.value=vocalsEl.currentTime;
+ calPlayPause.textContent=vocalsEl.paused?'▶ Play':'Ⅱ Pause';
+}},150);
+function refreshExportJson(){document.getElementById('calJson').value=JSON.stringify({lineStarts,charOverrides,lyricEnd:LYRIC_END_TIME});}
+calApplyBtn.addEventListener('click',()=>{
+ if(calCount()!==FULL_LINE_COUNT){flash('Capture all 53 lines first.');return;}
+ const conflict=firstChronologyConflict(calTaps);
+ if(conflict!==-1){flash(`Line ${conflict+1} must be later than line ${conflict}. Correct the timing first.`);return;}
+ // Invalidate every active loop before changing timing; old playback must not survive Apply.
+ vocalsEl.pause();bgmEl.pause();clearLoop();fineActive=false;fineTapBtn.disabled=true;
+ lineStarts=calTaps.slice();saveState({lineStarts,isCalibrated:true});refreshExportJson();
+ updateFineLoopBounds();fineUpdateUI();updateCalUI();updateFineLock();
+ forceRerender();renderList();flash('All 53 line timings applied and saved!');
+});
+initDots();refreshExportJson();
+document.getElementById('calCopy').addEventListener('click',()=>{navigator.clipboard.writeText(document.getElementById('calJson').value).then(()=>flash('Copied!'));});
+document.getElementById('calDownload').addEventListener('click',()=>{
+ const blob=new Blob([document.getElementById('calJson').value],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='timing.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+});
+// Two-step recovery: pasting and checking are read-only. Only explicit Apply modifies state.
+let checkedImport=null;
+const importBox=document.getElementById('calImportBox');
+const checkButton=document.getElementById('calCheck');
+const applyButton=document.getElementById('calImport');
+const importStatus=document.getElementById('calImportStatus');
+importBox.addEventListener('input',()=>{
+ checkedImport=null;applyButton.disabled=true;
+ importStatus.textContent='JSON changed. Click Check JSON again; nothing has been applied.';
+});
+checkButton.addEventListener('click',()=>{
+ checkedImport=null;applyButton.disabled=true;
+ try{
+  const raw=importBox.value.trim();
+  if(!raw)throw Error('Paste the JSON first.');
+  const obj=JSON.parse(raw);
+  if(!obj||Array.isArray(obj)||typeof obj!=='object')throw Error('Expected an object containing lineStarts and charOverrides.');
+  const arr=obj.lineStarts,ov=obj.charOverrides??{};
+  if(!Array.isArray(arr)||arr.length!==FULL_LINE_COUNT||!arr.every(x=>typeof x==='number'&&Number.isFinite(x)))throw Error('Expected exactly 53 numeric line timestamps.');
+  if(!ov||typeof ov!=='object'||Array.isArray(ov))throw Error('charOverrides must be an object.');
+  const conflict=firstChronologyConflict(arr);
+  const validated={};
+  for(const [key,value] of Object.entries(ov)){
+   if(!/^(0|[1-9]\d*)$/.test(key)||Number(key)>=FULL_LINE_COUNT||!Array.isArray(value)||!value.every(x=>typeof x==='number'&&Number.isFinite(x)))throw Error(`Invalid character timing entry: ${key}.`);
+   validated[key]=value.slice();
+  }
+  let valid=0,invalid=[];
+  Object.entries(validated).forEach(([key,values])=>{
+   const i=+key,n=FULL_SONG_LINES[i].hanzi.length;
+   const start=arr[i],end=i+1<FULL_LINE_COUNT?arr[i+1]:AUDIO_DURATION;
+   if(values.length===n&&values.every((t,k)=>t>=start-0.01&&t<end&&(k===0||t>values[k-1])))valid++;
+   else invalid.push(i+1);
+  });
+  checkedImport={raw,arr:arr.slice(),ov:validated,conflict,valid,invalid};
+  const orderNotice=conflict===-1?'Line order valid; character editing can unlock.':`Line order issue: line ${conflict+1} is not later than line ${conflict}. Character editing stays locked.`;
+  importStatus.textContent=`Checked only — NOT applied. 53 line timestamps; ${valid} valid character lines; ${invalid.length} need review${invalid.length?' (lines '+invalid.join(', ')+')':''}; ${FULL_LINE_COUNT-Object.keys(validated).length} missing. ${orderNotice} Click Apply Calibration to import.`;
+  applyButton.disabled=false;
+ }catch(e){importStatus.textContent='Check failed; saved calibration unchanged: '+e.message;}
+});
+applyButton.addEventListener('click',()=>{
+ if(!checkedImport||checkedImport.raw!==importBox.value.trim()){
+  applyButton.disabled=true;checkedImport=null;
+  importStatus.textContent='JSON changed or was not checked. Click Check JSON first.';return;
+ }
+ const data=checkedImport;
+ try{localStorage.setItem(STORAGE_KEY+'_before_import_backup',JSON.stringify({state:loadState(),draft:calTaps}));}catch(e){}
+ vocalsEl.pause();bgmEl.pause();clearLoop();
+ lineStarts=data.arr.slice();charOverrides=JSON.parse(JSON.stringify(data.ov));
+ calTaps=data.arr.slice();calHistory=[];calSelected=0;
+ persistCal();saveState({lineStarts,charOverrides,isCalibrated:data.conflict===-1,lyricSequenceVersion:2});
+ refreshExportJson();refreshFineOptions();updateFineLoopBounds();fineUpdateUI();updateCalUI();updateFineLock();forceRerender();renderList();
+ importStatus.textContent=`Applied successfully: 53 lines; ${data.valid} valid character lines; ${data.invalid.length} need review; ${FULL_LINE_COUNT-Object.keys(data.ov).length} still missing.${data.conflict===-1?' Character calibration unlocked.':' Fix line order before character calibration.'}`;
+ checkedImport=null;applyButton.disabled=true;
+ flash('Calibration imported and saved.');
+});
+
+/* ================= FINE-TUNE ONE LINE (word-level) ================= */
+const fineSelect = document.getElementById('fineLineSelect');
+function refreshFineOptions(){
+  fineSelect.innerHTML='';
+  FULL_SONG_LINES.forEach((l,i)=>{
+    const opt=document.createElement('option');opt.value=i;
+    opt.textContent=`${i+1}. ${l.hanzi}${characterTimingStatus(i)==='valid'?' (saved ✓)':characterTimingStatus(i)==='invalid'?' (review needed)':''}`;
+    fineSelect.appendChild(opt);
+  });
+  fineLineIdx=0; fineCharIdx=0; fineTaps=[]; fineActive=false;
+  if(typeof fineDotsInit==='function'){fineDotsInit(ALL_LINES[0].hanzi.length);fineUpdateUI();}
+}
+const fineLoopBtn = document.getElementById('fineLoopBtn');
+const fineStopBtn = document.getElementById('fineStopBtn');
+const fineTapBtn = document.getElementById('fineTapBtn');
+const fineNextChar = document.getElementById('fineNextChar');
+const fineProgress = document.getElementById('fineProgress');
+const fineDots = document.getElementById('fineDots');
+const fineApplyBtn = document.getElementById('fineApply');
+const fineClearBtn = document.getElementById('fineClear');
+let fineLineIdx = 0, fineActive=false, fineCharIdx=0, fineTaps=[];
+function fineLineBounds(i){
+  const start=lineStarts[i];
+  const end=(i+1<FULL_LINE_COUNT)?lineStarts[i+1]:LYRIC_END_TIME;
+  return {start,end};
+}
+function updateFineLoopBounds(){
+  const el=document.getElementById('fineLoopBounds');
+  if(!el)return;
+  const {start,end}=fineLineBounds(fineLineIdx);
+  el.textContent=`Line ${fineLineIdx+1} loop (applied): ${start.toFixed(2)}s → ${end.toFixed(2)}s`;
+}
+function fineDotsInit(n){ fineDots.innerHTML=''; for(let i=0;i<n;i++){ const s=document.createElement('span'); fineDots.appendChild(s); } }
+function fineUpdateUI(){
+  const n = FULL_SONG_LINES[fineLineIdx].hanzi.length;
+  fineNextChar.textContent = fineCharIdx<n ? FULL_SONG_LINES[fineLineIdx].hanzi[fineCharIdx] : 'Done!';
+  fineProgress.textContent = `New recording: ${fineTaps.length} / ${n} characters captured`;
+  const status=characterTimingStatus(fineLineIdx);
+  const statusEl=document.getElementById('fineSavedStatus');
+  statusEl.textContent=status==='valid'?`Saved: ${n} / ${n} characters ✓ (kept until you apply a replacement)`:
+    status==='invalid'?`Saved timing needs review (${charOverrides[fineLineIdx]?.length??0} / ${n} entries). Original values retained.`:
+    'No saved character calibration for this line.';
+  [...fineDots.children].forEach((d,i)=> d.classList.toggle('done', i<fineTaps.length));
+  fineApplyBtn.disabled = fineTaps.length===0 || !linesAppliedAndComplete();
+}
+fineSelect.addEventListener('change', ()=>{
+  vocalsEl.pause();clearLoop();
+  fineLineIdx = +fineSelect.value; fineCharIdx=0; fineTaps=[]; fineActive=false;
+  fineDotsInit(FULL_SONG_LINES[fineLineIdx].hanzi.length); fineTapBtn.disabled = true; updateFineLoopBounds();fineUpdateUI();
+});
+refreshFineOptions();
+updateFineLoopBounds();
+fineControlsReady=true;
+updateFineLock();
+fineLoopBtn.addEventListener('click', async ()=>{
+  if(!linesAppliedAndComplete()){
+    flash('Complete and apply all 53 line timings before character calibration.');return;
+  }
+  vocalsEl.pause();bgmEl.pause();clearLoop();
+  const i=fineLineIdx,{start,end}=fineLineBounds(i);
+  if(!(Number.isFinite(start)&&Number.isFinite(end)&&end>start)){
+    flash('Line timing is invalid. Please correct the line starts.');return;
+  }
+  const requestId=fineLoopRequestId;
+  fineLoopBtn.disabled=true;
+  fineCharIdx=0;fineTaps=[];fineActive=false;fineTapBtn.disabled=true;
+  fineDotsInit(FULL_SONG_LINES[i].hanzi.length);fineUpdateUI();
+  updateFineLoopBounds();
+  try{
+    const ready=await seekVocalsPrecisely(start,requestId);
+    if(!ready)return;
+    vocalsEl.playbackRate=1;
+    // Don't start audio until the seek is confirmed; previously this race
+    // could make the loop audibly begin at an old position (often 0:00).
+    setLoop(start,end,`Fine-tune: line ${i+1}`,undefined,true);
+    loopRange.fineLineIdx=i;
+    await vocalsEl.play();
+    if(requestId!==fineLoopRequestId)return;
+    fineActive=true;fineTapBtn.disabled=false;
+  }catch(e){
+    if(requestId===fineLoopRequestId){clearLoop();fineActive=false;fineTapBtn.disabled=true;flash('Loop could not start: '+e.message);}
+  }finally{fineLoopBtn.disabled=!linesAppliedAndComplete();}
+});
+fineStopBtn.addEventListener('click', ()=>{ vocalsEl.pause(); clearLoop(); fineActive=false; fineTapBtn.disabled=true; });
+fineTapBtn.addEventListener('click', ()=>{
+  if(!fineActive || !linesAppliedAndComplete())return;
+  const n = FULL_SONG_LINES[fineLineIdx].hanzi.length;
+  if(fineCharIdx>=n) return;
+  fineTaps.push(+vocalsEl.currentTime.toFixed(2)); fineCharIdx++; fineUpdateUI();
+  if(fineCharIdx>=n){ fineActive=false; flash('Line captured — tap "Apply to this line" when ready.'); }
+});
+fineApplyBtn.addEventListener('click', ()=>{
+  if(fineTaps.length===0 || !linesAppliedAndComplete())return;
+  const n = FULL_SONG_LINES[fineLineIdx].hanzi.length;
+  const filled = fineTaps.slice();
+  while(filled.length<n){ const i=filled.length; const prev=filled[i-1] ?? lineStarts[fineLineIdx]; const {end} = fineLineBounds(fineLineIdx); filled.push(+(prev + (end-prev)/(n-i+1)).toFixed(2)); }
+  charOverrides[fineLineIdx] = filled;persistCal();saveState({charOverrides});updateCalUI();
+  fineSelect.options[fineLineIdx].textContent = `${fineLineIdx+1}. ${FULL_SONG_LINES[fineLineIdx].hanzi} (saved ✓)`;
+  refreshExportJson();fineUpdateUI();
+  flash('Applied! This line now uses your exact word timing.');
+  forceRerender(); renderList();
+});
+fineClearBtn.addEventListener('click', ()=>{
+  if(!linesAppliedAndComplete())return;
+  delete charOverrides[fineLineIdx];persistCal();saveState({charOverrides});updateCalUI();
+  fineSelect.options[fineLineIdx].textContent = `${fineLineIdx+1}. ${FULL_SONG_LINES[fineLineIdx].hanzi}`;
+  refreshExportJson();fineUpdateUI();
+  flash('Override cleared — back to even spacing for this line.');
+  forceRerender(); renderList();
+});
+
+/* ================= RECORD & PLAYBACK ================= */
+let mediaRecorder, recChunks=[], micStream;
+const recBtn = document.getElementById('recBtn');
+const recStopBtn = document.getElementById('recStopBtn');
+const recStatus = document.getElementById('recStatus');
+recBtn.addEventListener('click', async ()=>{
+  try{ micStream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ recStatus.textContent = 'Could not access the microphone (permission denied, or this needs to be opened over https/localhost once hosted).'; return; }
+  recChunks=[];
+  mediaRecorder = new MediaRecorder(micStream);
+  mediaRecorder.ondataavailable = e=>{ if(e.data.size>0) recChunks.push(e.data); };
+  mediaRecorder.onstop = ()=>{
+    const blob = new Blob(recChunks, {type:'audio/webm'});
+    const url = URL.createObjectURL(blob);
+    document.getElementById('recPlayback').src = url;
+    document.getElementById('recDownload').href = url;
+    document.getElementById('recPlaybackCard').style.display='block';
+    micStream.getTracks().forEach(t=>t.stop());
+  };
+  mediaRecorder.start();
+  seekTo(0); activeAudio().play().catch(()=>{});
+  recBtn.disabled=true; recStopBtn.disabled=false;
+  recStatus.innerHTML = '<span class="rec-dot"></span>Recording — singing along with the current Practice mode...';
+});
+recStopBtn.addEventListener('click', ()=>{
+  if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop();
+  activeAudio().pause();
+  recBtn.disabled=false; recStopBtn.disabled=true;
+  recStatus.textContent='Stopped. Your take is ready below.';
+});
+
+/* ================= init ================= */
+appReady = true;
+applyMode(mode, 0);
+renderList();
+forceRerender();
+
+/* ================= offline support (PWA service worker) =================
+   Only registers over http/https — browsers block service workers entirely on file://,
+   so this silently no-ops when the file is just double-clicked/opened locally.
+   Once served over http(s) (a dev server for testing, GitHub Pages for real use) and
+   loaded once with a connection, the whole app — including both audio tracks — is cached
+   for offline use afterward. */
+if('serviceWorker' in navigator && (location.protocol === 'http:' || location.protocol === 'https:')){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
